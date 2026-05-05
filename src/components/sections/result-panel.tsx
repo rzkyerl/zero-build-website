@@ -1,14 +1,24 @@
 "use client";
 
+import { useCallback } from "react";
 import { formatBytes } from "@/lib/format-size";
-import { useResult } from "@/features/result/use-result";
-import type { FileInfo } from "@/types/file";
+import type { FileInfo, CompressResult } from "@/types/file";
 
-interface Props { fileInfo: FileInfo; resultSize: number; onReset: () => void; }
+interface Props {
+  fileInfo: FileInfo;
+  result: CompressResult;
+  onReset: () => void;
+}
 
-export default function ResultPanel({ fileInfo, resultSize, onReset }: Props) {
-  const { downloadUrl, downloadName, reductionPercent, reductionBarWidth, handleReset } =
-    useResult({ fileInfo, resultSize, onReset });
+export default function ResultPanel({ fileInfo, result, onReset }: Props) {
+  const reductionPercent = Math.round((1 - result.size / fileInfo.size) * 100);
+  const reductionBarWidth = `${(result.size / fileInfo.size) * 100}%`;
+  const downloadName = `zero_${fileInfo.name.replace(/\.[^.]+$/, "")}.${result.format}`;
+
+  const handleReset = useCallback(() => {
+    URL.revokeObjectURL(result.url);
+    onReset();
+  }, [result.url, onReset]);
 
   return (
     <div className="scale-in space-y-3">
@@ -16,9 +26,9 @@ export default function ResultPanel({ fileInfo, resultSize, onReset }: Props) {
       <div className="rounded-2xl overflow-hidden" style={{ background: "var(--surface)", border: "1px solid var(--border)" }}>
         <div className="grid grid-cols-2" style={{ borderBottom: "1px solid var(--border)" }}>
           {[
-            { label: "Before", size: fileInfo.size, dim: true },
-            { label: "After",  size: resultSize,    dim: false },
-          ].map(({ label, size, dim }, i) => (
+            { label: "Before", url: fileInfo.url,  size: fileInfo.size, dim: true  },
+            { label: "After",  url: result.url,    size: result.size,   dim: false },
+          ].map(({ label, url, size, dim }, i) => (
             <div key={label} className="p-5" style={i === 0 ? { borderRight: "1px solid var(--border)" } : {}}>
               <p style={{ fontFamily: "var(--font-geist-mono)", fontSize: 10, color: "var(--fg-3)", letterSpacing: "0.15em", textTransform: "uppercase", marginBottom: 12 }}>
                 {label}
@@ -33,14 +43,16 @@ export default function ResultPanel({ fileInfo, resultSize, onReset }: Props) {
                   </svg>
                 ) : (
                   // eslint-disable-next-line @next/next/no-img-element
-                  <img src={fileInfo.url} alt={label} className="w-full h-full object-cover"
+                  <img src={url} alt={label} className="w-full h-full object-cover"
                     style={!dim ? { filter: "contrast(1.02) saturate(1.02)" } : {}} />
                 )}
               </div>
               <p className="text-sm font-semibold" style={{ color: dim ? "var(--fg-2)" : "var(--fg)", fontFamily: "var(--font-geist-mono)" }}>
                 {formatBytes(size)}
               </p>
-              <p style={{ fontSize: 10, color: "var(--fg-3)", marginTop: 2 }}>{label === "Before" ? "Original" : "Compressed"}</p>
+              <p style={{ fontSize: 10, color: "var(--fg-3)", marginTop: 2 }}>
+                {label === "Before" ? "Original" : `Compressed · .${result.format.toUpperCase()}`}
+              </p>
             </div>
           ))}
         </div>
@@ -58,7 +70,7 @@ export default function ResultPanel({ fileInfo, resultSize, onReset }: Props) {
           </div>
           <div className="flex justify-between mt-2">
             <span style={{ fontSize: 10, color: "var(--fg-4)", fontFamily: "var(--font-geist-mono)" }}>{formatBytes(fileInfo.size)}</span>
-            <span style={{ fontSize: 10, color: "var(--fg-3)", fontFamily: "var(--font-geist-mono)" }}>{formatBytes(resultSize)}</span>
+            <span style={{ fontSize: 10, color: "var(--fg-3)", fontFamily: "var(--font-geist-mono)" }}>{formatBytes(result.size)}</span>
           </div>
         </div>
       </div>
@@ -79,7 +91,7 @@ export default function ResultPanel({ fileInfo, resultSize, onReset }: Props) {
       {/* Actions */}
       <div className="grid grid-cols-2 gap-3">
         <a
-          href={downloadUrl}
+          href={result.url}
           download={downloadName}
           className="flex items-center justify-center gap-2 py-3.5 rounded-2xl text-sm font-semibold text-black bg-white transition-all duration-200 active:scale-95"
           onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.boxShadow = "0 0 28px rgba(255,255,255,0.18)"; }}
@@ -88,7 +100,7 @@ export default function ResultPanel({ fileInfo, resultSize, onReset }: Props) {
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
             <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="7 10 12 15 17 10" /><line x1="12" y1="15" x2="12" y2="3" />
           </svg>
-          Download
+          Download .{result.format.toUpperCase()}
         </a>
         <button
           onClick={handleReset}

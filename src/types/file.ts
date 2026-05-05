@@ -6,4 +6,11 @@ export interface FileInfo {
   isVideo: boolean;
 }
 
-export type AppState = "idle" | "file-selected" | "processing" | "done";
+export interface CompressResult {
+  url: string;           // object URL of compressed output
+  size: number;          // compressed file size in bytes
+  format: string;        // e.g. "jpg", "webp", "mp4"
+  mimeType: string;
+}
+
+export type AppState = "idle" | "file-selected" | "loading-ffmpeg" | "processing" | "done" | "error";
