@@ -1,10 +1,9 @@
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type LenisInstance = any;
+
 declare global {
   interface Window {
-    lenis?: {
-      scrollTo(target: number | string | HTMLElement, opts?: { offset?: number; duration?: number }): void;
-      raf(time: number): void;
-      destroy(): void;
-    };
+    lenis?: LenisInstance;
   }
 }
 
