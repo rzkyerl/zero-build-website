@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import Image from "next/image";
 
 export default function About() {
   const ref = useRef<HTMLDivElement>(null);
@@ -56,10 +57,18 @@ export default function About() {
               </p>
             </div>
 
-            <div className="fade-up d6 flex items-center gap-3 mt-10 pt-8" style={{ borderTop: "1px solid var(--border)" }}>
-              <div className="w-9 h-9 rounded-full flex items-center justify-center"
-                style={{ background: "rgba(255,255,255,0.05)", border: "1px solid var(--border)" }}>
-                <div className="w-3.5 h-3.5 rounded-full" style={{ background: "rgba(255,255,255,0.4)" }} />
+            <div className="fade-up d6 flex items-center gap-4 mt-10 pt-8" style={{ borderTop: "1px solid var(--border)" }}>
+              <div
+                className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 overflow-hidden"
+                style={{ background: "rgba(255,255,255,0.06)", border: "1px solid var(--border)" }}
+              >
+                <Image
+                  src="/CTRLBuild-White.png"
+                  alt="CTRLBuild"
+                  width={28}
+                  height={28}
+                  style={{ objectFit: "contain", opacity: 0.85 }}
+                />
               </div>
               <div>
                 <p className="text-sm font-medium" style={{ color: "var(--fg-2)" }}>CTRLBuild</p>
