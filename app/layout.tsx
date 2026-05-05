@@ -21,6 +21,10 @@ export const metadata: Metadata = {
   title: "Zero — Compress. Stay Sharp.",
   description:
     "Optimize your photos and videos for social media directly in your browser. No upload, no account, 100% private.",
+  icons: {
+    icon: "/zero-logo.png",
+    apple: "/zero-logo.png",
+  },
 };
 
 export default function RootLayout({

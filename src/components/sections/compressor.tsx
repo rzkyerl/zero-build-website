@@ -52,7 +52,7 @@ function Disclaimer() {
     >
       {/* Header */}
       <div
-        className="flex items-center gap-2.5 px-5 py-3"
+        className="flex items-center gap-3 px-5 py-3"
         style={{ borderBottom: "1px solid var(--border)", background: "rgba(255,255,255,0.02)" }}
       >
         <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="var(--fg-3)" strokeWidth="2">
