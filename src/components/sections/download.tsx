@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import Image from "next/image";
 
 const APK_URL =
   "https://github.com/rzkyerl/zero-build-website/releases/download/v1.0.0/zero-build-v1.0.0.apk";
@@ -14,121 +15,17 @@ const FEATURES = [
   "100% offline — no data ever leaves your device",
 ];
 
-/* Phone mockup — pure CSS, no image needed */
+/* Phone mockup image */
 function PhoneMockup() {
   return (
-    <div
-      className="relative mx-auto"
-      style={{ width: 220, height: 440 }}
-    >
-      {/* Phone shell */}
-      <div
-        className="absolute inset-0 rounded-[2.8rem]"
-        style={{
-          border: "1.5px solid rgba(255,255,255,0.12)",
-          background: "linear-gradient(160deg, #1a1a1a 0%, #0a0a0a 100%)",
-          boxShadow: "0 40px 80px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.06)",
-        }}
-      />
-
-      {/* Screen */}
-      <div
-        className="absolute rounded-[2.2rem] overflow-hidden"
-        style={{ inset: 8, background: "#050505" }}
-      >
-        {/* Status bar */}
-        <div className="flex items-center justify-between px-5 pt-3 pb-1">
-          <span style={{ fontFamily: "var(--font-geist-mono)", fontSize: 8, color: "rgba(255,255,255,0.3)" }}>9:41</span>
-          <div className="flex items-center gap-1">
-            {[3, 4, 5].map((h) => (
-              <div key={h} className="rounded-sm" style={{ width: 3, height: h, background: "rgba(255,255,255,0.35)" }} />
-            ))}
-            <div className="ml-1 rounded-sm" style={{ width: 14, height: 7, border: "1px solid rgba(255,255,255,0.3)", borderRadius: 2 }}>
-              <div style={{ width: "70%", height: "100%", background: "rgba(255,255,255,0.4)", borderRadius: 1 }} />
-            </div>
-          </div>
-        </div>
-
-        {/* App header */}
-        <div className="px-4 pt-2 pb-3 flex items-center justify-between" style={{ borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
-          <span className="font-bold" style={{ fontSize: 16, color: "rgba(255,255,255,0.9)", letterSpacing: "-0.02em" }}>Zero</span>
-          <div style={{ width: 28, height: 28, borderRadius: 8, background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.08)" }} />
-        </div>
-
-        {/* Upload zone */}
-        <div className="mx-3 mt-3 rounded-2xl flex flex-col items-center justify-center py-5"
-          style={{ border: "1.5px dashed rgba(255,255,255,0.1)", background: "rgba(255,255,255,0.02)" }}>
-          <div className="rounded-xl flex items-center justify-center mb-2"
-            style={{ width: 32, height: 32, background: "rgba(255,255,255,0.06)" }}>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.4)" strokeWidth="1.5">
-              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-              <polyline points="17 8 12 3 7 8" />
-              <line x1="12" y1="3" x2="12" y2="15" />
-            </svg>
-          </div>
-          <span style={{ fontSize: 9, color: "rgba(255,255,255,0.4)", fontWeight: 600 }}>Tap to select media</span>
-          <span style={{ fontSize: 7, color: "rgba(255,255,255,0.2)", marginTop: 2 }}>JPG · PNG · MP4</span>
-        </div>
-
-        {/* Preset pills */}
-        <div className="flex gap-1.5 px-3 mt-3 overflow-hidden">
-          {["Instagram", "WhatsApp", "Smart", "Custom"].map((p, i) => (
-            <div
-              key={p}
-              className="rounded-full px-2 py-1 flex-shrink-0"
-              style={{
-                fontSize: 7,
-                fontWeight: 600,
-                background: i === 2 ? "rgba(255,255,255,0.12)" : "rgba(255,255,255,0.04)",
-                border: `1px solid ${i === 2 ? "rgba(255,255,255,0.2)" : "rgba(255,255,255,0.06)"}`,
-                color: i === 2 ? "rgba(255,255,255,0.9)" : "rgba(255,255,255,0.3)",
-              }}
-            >
-              {p}
-            </div>
-          ))}
-        </div>
-
-        {/* Optimize button */}
-        <div className="mx-3 mt-3 rounded-xl flex items-center justify-center py-2.5"
-          style={{ background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.1)" }}>
-          <span style={{ fontSize: 9, fontWeight: 700, color: "rgba(255,255,255,0.5)", letterSpacing: "0.05em" }}>
-            OPTIMIZE NOW
-          </span>
-        </div>
-
-        {/* Result preview */}
-        <div className="mx-3 mt-3 rounded-xl overflow-hidden" style={{ border: "1px solid rgba(255,255,255,0.06)" }}>
-          <div className="grid grid-cols-2" style={{ borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
-            {["Before", "After"].map((l, i) => (
-              <div key={l} className="p-2" style={i === 0 ? { borderRight: "1px solid rgba(255,255,255,0.06)" } : {}}>
-                <div style={{ fontSize: 7, color: "rgba(255,255,255,0.25)", marginBottom: 4, fontFamily: "var(--font-geist-mono)" }}>{l}</div>
-                <div className="rounded-lg" style={{ height: 36, background: "rgba(255,255,255,0.04)" }} />
-                <div style={{ fontSize: 8, color: i === 0 ? "rgba(255,255,255,0.3)" : "rgba(255,255,255,0.8)", marginTop: 3, fontWeight: 600, fontFamily: "var(--font-geist-mono)" }}>
-                  {i === 0 ? "12.4 MB" : "3.2 MB"}
-                </div>
-              </div>
-            ))}
-          </div>
-          <div className="px-2 py-1.5 flex items-center justify-between">
-            <span style={{ fontSize: 7, color: "rgba(255,255,255,0.25)" }}>Reduction</span>
-            <span style={{ fontSize: 8, fontWeight: 700, color: "rgba(255,255,255,0.7)", fontFamily: "var(--font-geist-mono)" }}>−74%</span>
-          </div>
-        </div>
-      </div>
-
-      {/* Notch */}
-      <div
-        className="absolute top-3 left-1/2 -translate-x-1/2 rounded-full"
-        style={{ width: 60, height: 6, background: "#0a0a0a", zIndex: 10 }}
-      />
-
-      {/* Side button */}
-      <div
-        className="absolute rounded-full"
-        style={{ right: -2, top: 80, width: 3, height: 32, background: "rgba(255,255,255,0.08)" }}
-      />
-    </div>
+    <Image
+      src="/preview-mobile/Home Mockup.png"
+      alt="Zero app — Home screen"
+      width={280}
+      height={560}
+      style={{ objectFit: "contain", maxHeight: 560 }}
+      priority
+    />
   );
 }
 
