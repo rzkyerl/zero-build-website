@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Image from "next/image";
 import { scrollToId } from "@/lib/scroll";
 
 const NAV_LINKS = [
@@ -60,10 +61,16 @@ export default function Navbar() {
             className="flex items-center gap-2 group"
           >
             <div
-              className="w-5 h-5 rounded-full flex items-center justify-center transition-all duration-300 group-hover:scale-110"
-              style={{ border: "1px solid rgba(255,255,255,0.15)", background: "rgba(255,255,255,0.05)" }}
+              className="w-5 h-5 rounded-full flex items-center justify-center transition-all duration-300 group-hover:scale-110 overflow-hidden"
+              style={{ border: "1px solid rgba(255,255,255,0.12)", background: "rgba(255,255,255,0.05)" }}
             >
-              <div className="w-1.5 h-1.5 rounded-full" style={{ background: "rgba(255,255,255,0.7)" }} />
+              <Image
+                src="/zero-logo.png"
+                alt="Zero"
+                width={20}
+                height={20}
+                style={{ objectFit: "cover", opacity: 0.85 }}
+              />
             </div>
             <span className="text-sm font-semibold" style={{ color: "var(--fg-2)", letterSpacing: "-0.01em" }}>
               Zero

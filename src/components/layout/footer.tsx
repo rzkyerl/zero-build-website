@@ -15,10 +15,16 @@ export default function Footer() {
           <div>
             <div className="flex items-center gap-2 mb-2">
               <div
-                className="w-5 h-5 rounded-full flex items-center justify-center"
+                className="w-5 h-5 rounded-full flex items-center justify-center overflow-hidden"
                 style={{ border: "1px solid rgba(255,255,255,0.1)", background: "rgba(255,255,255,0.04)" }}
               >
-                <div className="w-1.5 h-1.5 rounded-full" style={{ background: "rgba(255,255,255,0.5)" }} />
+                <Image
+                  src="/zero-logo.png"
+                  alt="Zero"
+                  width={20}
+                  height={20}
+                  style={{ objectFit: "cover", opacity: 0.8 }}
+                />
               </div>
               <span className="text-sm font-semibold" style={{ color: "var(--fg-2)" }}>Zero</span>
             </div>
