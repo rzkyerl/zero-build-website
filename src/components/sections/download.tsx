@@ -15,92 +15,186 @@ const FEATURES = [
   "100% offline — no data ever leaves your device",
 ];
 
-/* Spotlight + phone mockup with animated light */
-function PhoneShowcase() {
+/* ── CSS Phone frame + screenshot ─────────────────────── */
+function PhoneFrame() {
   const spotRef = useRef<HTMLDivElement>(null);
 
+  // Animated spotlight orbiting the phone
   useEffect(() => {
     const el = spotRef.current;
     if (!el) return;
-
-    // Animate spotlight position in a slow elliptical orbit
     let t = 0;
     let raf: number;
     const loop = () => {
-      t += 0.004;
-      const x = 50 + Math.sin(t) * 28;
-      const y = 30 + Math.cos(t * 0.7) * 22;
-      el.style.background = `radial-gradient(ellipse 55% 45% at ${x}% ${y}%, rgba(255,255,255,0.13) 0%, rgba(255,255,255,0.04) 40%, transparent 70%)`;
+      t += 0.003;
+      const x = 50 + Math.sin(t) * 32;
+      const y = 35 + Math.cos(t * 0.65) * 25;
+      el.style.background = `radial-gradient(ellipse 60% 50% at ${x}% ${y}%, rgba(255,255,255,0.11) 0%, rgba(255,255,255,0.03) 45%, transparent 70%)`;
       raf = requestAnimationFrame(loop);
     };
     raf = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(raf);
   }, []);
 
+  // Phone dimensions — based on 1344×2992 screenshot ratio (≈9:20)
+  const W = 300;
+  const H = Math.round(W * (2992 / 1344)); // ≈ 668
+
+  const BEZEL   = 9;    // outer frame thickness
+  const RADIUS  = 36;   // outer corner radius — Android is flatter than iPhone
+  const IRADIUS = 28;   // inner screen corner radius
+
   return (
-    <div className="relative flex items-center justify-center" style={{ width: "100%", maxWidth: 420 }}>
+    <div className="relative flex items-center justify-center" style={{ width: W + 60, minHeight: H + 60 }}>
 
-      {/* Animated spotlight layer */}
-      <div
-        ref={spotRef}
-        className="absolute inset-0 pointer-events-none rounded-3xl"
-        style={{ zIndex: 1 }}
-        aria-hidden="true"
-      />
-
-      {/* Outer glow ring — slow pulse */}
+      {/* Ambient glow behind phone */}
       <div
         className="absolute rounded-full pointer-events-none"
         style={{
-          width: 340,
-          height: 340,
-          background: "radial-gradient(circle, rgba(255,255,255,0.06) 0%, transparent 65%)",
-          animation: "glow-pulse 4s ease-in-out infinite",
-          zIndex: 0,
-        }}
-        aria-hidden="true"
-      />
-
-      {/* Secondary glow — offset, slower */}
-      <div
-        className="absolute rounded-full pointer-events-none"
-        style={{
-          width: 260,
-          height: 260,
-          top: "10%",
-          left: "15%",
-          background: "radial-gradient(circle, rgba(255,255,255,0.04) 0%, transparent 70%)",
-          animation: "glow-pulse 6s ease-in-out 1s infinite",
-          zIndex: 0,
+          width: W + 80,
+          height: H * 0.6,
+          top: "20%",
+          left: "50%",
+          transform: "translateX(-50%)",
+          background: "radial-gradient(ellipse, rgba(255,255,255,0.07) 0%, transparent 70%)",
+          animation: "glow-pulse 5s ease-in-out infinite",
+          filter: "blur(8px)",
         }}
         aria-hidden="true"
       />
 
       {/* Floor reflection */}
       <div
-        className="absolute bottom-0 left-1/2 -translate-x-1/2 pointer-events-none"
+        className="absolute pointer-events-none"
         style={{
-          width: 200,
-          height: 40,
-          background: "radial-gradient(ellipse, rgba(255,255,255,0.08) 0%, transparent 70%)",
-          filter: "blur(12px)",
-          zIndex: 0,
+          bottom: -8,
+          left: "50%",
+          transform: "translateX(-50%)",
+          width: W * 0.7,
+          height: 24,
+          background: "radial-gradient(ellipse, rgba(255,255,255,0.1) 0%, transparent 70%)",
+          filter: "blur(10px)",
         }}
         aria-hidden="true"
       />
 
-      {/* Phone image */}
+      {/* Phone shell */}
       <div
         className="relative float"
-        style={{ zIndex: 2, animationDelay: "0.3s", filter: "drop-shadow(0 40px 60px rgba(0,0,0,0.7)) drop-shadow(0 0 40px rgba(255,255,255,0.06))" }}
+        style={{
+          width: W,
+          height: H,
+          borderRadius: RADIUS,
+          background: "linear-gradient(175deg, #222 0%, #141414 60%, #1c1c1c 100%)",
+          boxShadow: [
+            "0 50px 100px rgba(0,0,0,0.8)",
+            "0 20px 40px rgba(0,0,0,0.5)",
+            "inset 0 1px 0 rgba(255,255,255,0.08)",
+            "inset 0 -1px 0 rgba(0,0,0,0.4)",
+            "0 0 0 1px rgba(255,255,255,0.06)",
+          ].join(", "),
+          animationDelay: "0.2s",
+        }}
       >
-        <Image
-          src="/preview-mobile/Home Mockup.png"
-          alt="Zero app — Home screen"
-          width={340}
-          height={680}
-          style={{ objectFit: "contain" }}
-          priority
+        {/* Animated spotlight overlay on frame */}
+        <div
+          ref={spotRef}
+          className="absolute inset-0 pointer-events-none"
+          style={{ borderRadius: RADIUS, zIndex: 10 }}
+          aria-hidden="true"
+        />
+
+        {/* Screen area — top bezel thinner, bottom chin slightly thicker (Android) */}
+        <div
+          className="absolute overflow-hidden"
+          style={{
+            top: BEZEL,
+            left: BEZEL,
+            right: BEZEL,
+            bottom: BEZEL + 4,   // +4px chin
+            borderRadius: IRADIUS,
+            background: "#000",
+          }}
+        >
+          {/* Screenshot */}
+          <Image
+            src="/preview-mobile/Home.png"
+            alt="Zero app — Home screen"
+            fill
+            style={{ objectFit: "cover", objectPosition: "top" }}
+            priority
+          />
+
+          {/* Punch-hole camera — Android style, top-center */}
+          <div
+            className="absolute z-20"
+            style={{
+              top: 14,
+              left: "50%",
+              transform: "translateX(-50%)",
+              width: 12,
+              height: 12,
+              borderRadius: "50%",
+              background: "#000",
+              boxShadow: "0 0 0 2px rgba(255,255,255,0.06)",
+            }}
+            aria-hidden="true"
+          />
+
+          {/* Screen glare — top-left shine */}
+          <div
+            className="absolute inset-0 pointer-events-none z-10"
+            style={{
+              background: "linear-gradient(135deg, rgba(255,255,255,0.05) 0%, transparent 35%)",
+              borderRadius: IRADIUS,
+            }}
+            aria-hidden="true"
+          />
+        </div>
+
+        {/* Power button — right side */}
+        <div
+          className="absolute"
+          style={{
+            right: -3,
+            top: 140,
+            width: 4,
+            height: 52,
+            borderRadius: "0 3px 3px 0",
+            background: "linear-gradient(180deg, #2e2e2e 0%, #1e1e1e 100%)",
+            boxShadow: "inset 0 1px 0 rgba(255,255,255,0.08)",
+          }}
+          aria-hidden="true"
+        />
+
+        {/* Volume up — left side */}
+        <div
+          className="absolute"
+          style={{
+            left: -3,
+            top: 120,
+            width: 4,
+            height: 44,
+            borderRadius: "3px 0 0 3px",
+            background: "linear-gradient(180deg, #2e2e2e 0%, #1e1e1e 100%)",
+            boxShadow: "inset 0 1px 0 rgba(255,255,255,0.08)",
+          }}
+          aria-hidden="true"
+        />
+
+        {/* Volume down — left side */}
+        <div
+          className="absolute"
+          style={{
+            left: -3,
+            top: 176,
+            width: 4,
+            height: 44,
+            borderRadius: "3px 0 0 3px",
+            background: "linear-gradient(180deg, #2e2e2e 0%, #1e1e1e 100%)",
+            boxShadow: "inset 0 1px 0 rgba(255,255,255,0.08)",
+          }}
+          aria-hidden="true"
         />
       </div>
     </div>
@@ -201,17 +295,17 @@ export default function Download() {
             </p>
           </div>
 
-          {/* Right — phone showcase */}
+          {/* Right — CSS phone frame */}
           <div className="fade-up d4 flex items-center justify-center py-8">
-            <PhoneShowcase />
+            <PhoneFrame />
           </div>
         </div>
       </div>
 
       <style>{`
         @keyframes glow-pulse {
-          0%, 100% { opacity: 0.6; transform: scale(1); }
-          50%       { opacity: 1;   transform: scale(1.08); }
+          0%, 100% { opacity: 0.6; transform: translateX(-50%) scale(1); }
+          50%       { opacity: 1;   transform: translateX(-50%) scale(1.06); }
         }
       `}</style>
     </section>
