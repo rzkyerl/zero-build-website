@@ -1,14 +1,10 @@
 "use client";
 
 import Image from "next/image";
+import { scrollToId } from "@/lib/scroll";
 
 export default function Footer() {
-  const go = (id: string) => {
-    const el = document.getElementById(id);
-    if (!el) return;
-    if (window.lenis) window.lenis.scrollTo(el, { offset: 0, duration: 1.2 });
-    else el.scrollIntoView({ behavior: "smooth" });
-  };
+  const go = (id: string) => scrollToId(id);
 
   return (
     <footer style={{ background: "var(--bg)", borderTop: "1px solid var(--border)" }}>
@@ -47,20 +43,6 @@ export default function Footer() {
                 {l}
               </button>
             ))}
-          </div>
-
-          {/* CTRLBuild logo */}
-          <div className="flex flex-col items-start sm:items-end gap-2">
-            <Image
-              src="/CTRLBuild-White.png"
-              alt="CTRLBuild"
-              width={80}
-              height={20}
-              style={{ opacity: 0.35, objectFit: "contain" }}
-            />
-            <p style={{ fontFamily: "var(--font-geist-mono)", fontSize: 10, color: "var(--fg-4)", letterSpacing: "0.1em" }}>
-              v1.0.0
-            </p>
           </div>
         </div>
 

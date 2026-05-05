@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { scrollToId } from "@/lib/scroll";
 
 const NAV_LINKS = [
   { label: "Compressor", id: "upload" },
@@ -28,10 +29,7 @@ export default function Navbar() {
 
   const go = (id: string) => {
     setOpen(false);
-    const el = document.getElementById(id);
-    if (!el) return;
-    if (window.lenis) window.lenis.scrollTo(el, { offset: 0, duration: 1.2 });
-    else el.scrollIntoView({ behavior: "smooth" });
+    scrollToId(id);
   };
 
   return (
@@ -53,7 +51,9 @@ export default function Navbar() {
           <button
             onClick={() => {
               setOpen(false);
-              if (window.lenis) window.lenis.scrollTo(0, { duration: 1.2 });
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              const lenis = (window as any).lenis;
+              if (lenis) lenis.scrollTo(0, { duration: 1.2 });
               else window.scrollTo({ top: 0, behavior: "smooth" });
             }}
             className="flex items-center gap-2 group"

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { scrollToId } from "@/lib/scroll";
 
 function CursorCoords() {
   const [pos, setPos] = useState({ x: 0, y: 0 });
@@ -55,12 +56,7 @@ export default function Hero() {
     return () => { clearTimeout(t); clearTimeout(fallback); };
   }, []);
 
-  const scrollTo = (id: string) => {
-    const el = document.getElementById(id);
-    if (!el) return;
-    if (window.lenis) window.lenis.scrollTo(el, { offset: 0, duration: 1.2 });
-    else el.scrollIntoView({ behavior: "smooth" });
-  };
+  const scrollTo = (id: string) => scrollToId(id);
 
   return (
     <>
