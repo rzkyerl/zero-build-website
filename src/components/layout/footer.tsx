@@ -15,7 +15,7 @@ export default function Footer() {
       <div className="max-w-6xl mx-auto px-6 sm:px-10 lg:px-16 py-14">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-8">
 
-          {/* Zero Build brand */}
+          {/* Zero brand */}
           <div>
             <div className="flex items-center gap-2 mb-2">
               <div
@@ -24,7 +24,7 @@ export default function Footer() {
               >
                 <div className="w-1.5 h-1.5 rounded-full" style={{ background: "rgba(255,255,255,0.5)" }} />
               </div>
-              <span className="text-sm font-semibold" style={{ color: "var(--fg-2)" }}>Zero Build</span>
+              <span className="text-sm font-semibold" style={{ color: "var(--fg-2)" }}>Zero</span>
             </div>
             <p style={{ fontSize: 11, color: "var(--fg-3)" }}>Built for creators who care about quality.</p>
           </div>

@@ -41,7 +41,7 @@ export default function About() {
             <h2 className="font-bold mb-10" style={{ fontSize: "clamp(2.2rem, 6vw, 5rem)", lineHeight: 0.95, letterSpacing: "-0.035em" }}>
               <span className="mask block"><span className="mask__inner" style={{ color: "var(--fg)" }}>The story</span></span>
               <span className="mask block d2"><span className="mask__inner" style={{ color: "var(--fg)" }}>behind</span></span>
-              <span className="mask block d3"><span className="mask__inner" style={{ color: "var(--fg-2)" }}>Zero Build.</span></span>
+              <span className="mask block d3"><span className="mask__inner" style={{ color: "var(--fg-2)" }}>Zero.</span></span>
             </h2>
 
             <div className="space-y-5 max-w-md">
@@ -51,7 +51,7 @@ export default function About() {
                 or files that are still too large.
               </p>
               <p className="fade-up d5 text-sm leading-[1.8]" style={{ color: "var(--fg-2)" }}>
-                Zero Build solves this by compressing your media{" "}
+                Zero solves this by compressing your media{" "}
                 <span style={{ color: "var(--fg)" }}>before</span> you upload, using parameters
                 tuned per platform. The result: visually sharp files at a fraction of the original size.
               </p>

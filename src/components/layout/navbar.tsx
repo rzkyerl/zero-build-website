@@ -65,7 +65,7 @@ export default function Navbar() {
               <div className="w-1.5 h-1.5 rounded-full" style={{ background: "rgba(255,255,255,0.7)" }} />
             </div>
             <span className="text-sm font-semibold" style={{ color: "var(--fg-2)", letterSpacing: "-0.01em" }}>
-              Zero Build
+              Zero
             </span>
           </button>
 

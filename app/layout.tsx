@@ -18,7 +18,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Zero Build — Compress. Stay Sharp.",
+  title: "Zero — Compress. Stay Sharp.",
   description:
     "Optimize your photos and videos for social media directly in your browser. No upload, no account, 100% private.",
 };

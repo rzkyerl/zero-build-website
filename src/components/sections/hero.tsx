@@ -91,7 +91,7 @@ export default function Hero() {
               letterSpacing: "0.15em",
               textTransform: "uppercase",
             }}>
-              Zero Build · v1.0
+              Zero · v1.0
             </span>
           </div>
           <div className="fade-in d2 hidden sm:flex items-center gap-6">

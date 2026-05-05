@@ -30,7 +30,7 @@ export default function PageLoader() {
       aria-hidden="true"
     >
       <div className="zb-loader__logo">
-        <span>Zero Build</span>
+        <span>Zero</span>
       </div>
       <div className="zb-loader__bar" />
     </div>
