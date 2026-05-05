@@ -3,65 +3,71 @@
 import { useEffect, useRef } from "react";
 
 export default function Cursor() {
+  const wrapRef = useRef<HTMLDivElement>(null);
   const dotRef = useRef<HTMLDivElement>(null);
   const ringRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    const wrap = wrapRef.current;
     const dot = dotRef.current;
     const ring = ringRef.current;
-    if (!dot || !ring) return;
+    if (!wrap || !dot || !ring) return;
 
-    let dotX = 0, dotY = 0;
-    let ringX = 0, ringY = 0;
+    let mx = -100, my = -100;
+    let rx = -100, ry = -100;
     let raf: number;
 
     const onMove = (e: MouseEvent) => {
-      dotX = e.clientX;
-      dotY = e.clientY;
+      mx = e.clientX;
+      my = e.clientY;
     };
 
     const loop = () => {
-      // Dot follows instantly
-      dot.style.left = `${dotX}px`;
-      dot.style.top = `${dotY}px`;
+      // Dot: instant
+      dot.style.left = `${mx}px`;
+      dot.style.top = `${my}px`;
 
-      // Ring lerps behind
-      ringX += (dotX - ringX) * 0.12;
-      ringY += (dotY - ringY) * 0.12;
-      ring.style.left = `${ringX}px`;
-      ring.style.top = `${ringY}px`;
+      // Ring: lerp
+      rx += (mx - rx) * 0.1;
+      ry += (my - ry) * 0.1;
+      ring.style.left = `${rx}px`;
+      ring.style.top = `${ry}px`;
 
       raf = requestAnimationFrame(loop);
     };
 
-    const onEnter = () => ring.classList.add("hovering");
-    const onLeave = () => ring.classList.remove("hovering");
+    const onEnter = () => wrap.classList.add("is-hovering");
+    const onLeave = () => wrap.classList.remove("is-hovering");
+    const onDown  = () => wrap.classList.add("is-clicking");
+    const onUp    = () => wrap.classList.remove("is-clicking");
 
     window.addEventListener("mousemove", onMove);
+    window.addEventListener("mousedown", onDown);
+    window.addEventListener("mouseup", onUp);
 
-    // Add hover effect to interactive elements
-    const targets = document.querySelectorAll("a, button, [data-cursor-hover]");
-    targets.forEach((el) => {
-      el.addEventListener("mouseenter", onEnter);
-      el.addEventListener("mouseleave", onLeave);
-    });
+    const addListeners = () => {
+      document.querySelectorAll("a, button, [data-hover]").forEach((el) => {
+        el.addEventListener("mouseenter", onEnter);
+        el.addEventListener("mouseleave", onLeave);
+      });
+    };
 
+    // Run after DOM settles
+    setTimeout(addListeners, 500);
     raf = requestAnimationFrame(loop);
 
     return () => {
-      window.removeEventListener("mousemove", onMove);
       cancelAnimationFrame(raf);
-      targets.forEach((el) => {
-        el.removeEventListener("mouseenter", onEnter);
-        el.removeEventListener("mouseleave", onLeave);
-      });
+      window.removeEventListener("mousemove", onMove);
+      window.removeEventListener("mousedown", onDown);
+      window.removeEventListener("mouseup", onUp);
     };
   }, []);
 
   return (
-    <>
-      <div ref={dotRef} className="cursor-dot" aria-hidden="true" />
-      <div ref={ringRef} className="cursor-ring" aria-hidden="true" />
-    </>
+    <div ref={wrapRef} className="c-cursor" aria-hidden="true">
+      <div ref={dotRef} className="c-cursor__dot" />
+      <div ref={ringRef} className="c-cursor__ring" />
+    </div>
   );
 }

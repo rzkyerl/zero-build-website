@@ -1,205 +1,214 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { Container } from "@/components/ui/container";
 
 const FEATURES = [
   {
-    icon: (
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-        <path d="M18.36 6.64a9 9 0 1 1-12.73 0" /><line x1="12" y1="2" x2="12" y2="12" />
-      </svg>
-    ),
+    num: "01",
     title: "100% Offline",
-    desc: "All processing happens in your browser. Your files never touch a server.",
+    desc: "All processing happens in your browser. Your files never touch a server — ever.",
     tag: "Privacy",
   },
   {
-    icon: (
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" />
-      </svg>
-    ),
+    num: "02",
     title: "No Login",
-    desc: "No account, no email, no tracking. Just open and compress.",
+    desc: "No account, no email, no tracking. Open the page and start compressing.",
     tag: "Simple",
   },
   {
-    icon: (
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-        <rect x="2" y="3" width="20" height="14" rx="2" ry="2" />
-        <line x1="8" y1="21" x2="16" y2="21" /><line x1="12" y1="17" x2="12" y2="21" />
-      </svg>
-    ),
+    num: "03",
     title: "Social Ready",
-    desc: "Presets tuned for Instagram, WhatsApp, and more — sharp output every time.",
+    desc: "Presets tuned for Instagram, WhatsApp, and more. Sharp output every time.",
     tag: "Optimized",
   },
   {
-    icon: (
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-        <polyline points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
-      </svg>
-    ),
+    num: "04",
     title: "Instant Results",
-    desc: "No waiting, no queues. Compression starts the moment you click.",
+    desc: "No waiting, no queues. Compression starts the moment you click Optimize.",
     tag: "Fast",
   },
   {
-    icon: (
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-      </svg>
-    ),
+    num: "05",
     title: "Private by Design",
     desc: "Zero telemetry, zero analytics, zero data collection. Your media stays yours.",
     tag: "Secure",
   },
   {
-    icon: (
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-        <circle cx="12" cy="12" r="3" />
-        <path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14" />
-      </svg>
-    ),
+    num: "06",
     title: "Photo & Video",
-    desc: "Supports JPG, PNG, WebP images and MP4 videos with smart codec selection.",
+    desc: "JPG, PNG, WebP images and MP4 videos — smart codec selection built in.",
     tag: "Versatile",
   },
 ];
 
-function FeatureCard({
-  feature,
-  index,
-}: {
-  feature: (typeof FEATURES)[0];
-  index: number;
-}) {
-  const cardRef = useRef<HTMLDivElement>(null);
-
-  const onMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    const card = cardRef.current;
-    if (!card) return;
-    const rect = card.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-    const cx = rect.width / 2;
-    const cy = rect.height / 2;
-    const rotX = ((y - cy) / cy) * -6;
-    const rotY = ((x - cx) / cx) * 6;
-    card.style.transform = `perspective(800px) rotateX(${rotX}deg) rotateY(${rotY}deg) translateZ(4px)`;
-    card.style.setProperty("--mx", `${x}px`);
-    card.style.setProperty("--my", `${y}px`);
-  };
-
-  const onMouseLeave = () => {
-    const card = cardRef.current;
-    if (!card) return;
-    card.style.transform = "perspective(800px) rotateX(0deg) rotateY(0deg) translateZ(0)";
-  };
-
-  return (
-    <div
-      ref={cardRef}
-      className={`reveal reveal-delay-${(index % 3) + 1} relative rounded-2xl p-6 group overflow-hidden`}
-      style={{
-        background: "#0a0a0a",
-        border: "1px solid #1a1a1a",
-        transition: "transform 0.3s cubic-bezier(0.25,0.46,0.45,0.94), border-color 0.3s ease",
-        willChange: "transform",
-      }}
-      onMouseMove={onMouseMove}
-      onMouseLeave={onMouseLeave}
-      onMouseEnter={(e) => {
-        (e.currentTarget as HTMLDivElement).style.borderColor = "rgba(255,255,255,0.1)";
-      }}
-    >
-      {/* Spotlight */}
-      <div className="spotlight" />
-
-      {/* Tag */}
-      <div
-        className="absolute top-4 right-4 text-[10px] font-medium tracking-widest uppercase px-2 py-1 rounded-full"
-        style={{ color: "rgba(255,255,255,0.15)", border: "1px solid rgba(255,255,255,0.06)" }}
-      >
-        {feature.tag}
-      </div>
-
-      {/* Icon */}
-      <div
-        className="w-10 h-10 rounded-xl flex items-center justify-center mb-5 transition-all duration-300 group-hover:scale-110"
-        style={{
-          background: "rgba(255,255,255,0.05)",
-          color: "rgba(255,255,255,0.4)",
-          border: "1px solid rgba(255,255,255,0.06)",
-        }}
-      >
-        {feature.icon}
-      </div>
-
-      <h3
-        className="font-semibold mb-2 transition-colors duration-200 group-hover:text-white"
-        style={{ color: "rgba(255,255,255,0.7)" }}
-      >
-        {feature.title}
-      </h3>
-      <p className="text-sm leading-relaxed" style={{ color: "#444" }}>
-        {feature.desc}
-      </p>
-    </div>
-  );
-}
-
 export default function Features() {
   const sectionRef = useRef<HTMLDivElement>(null);
+  const trackRef = useRef<HTMLDivElement>(null);
+  const stickyRef = useRef<HTMLDivElement>(null);
 
+  // Horizontal scroll driven by vertical scroll
+  useEffect(() => {
+    const section = sectionRef.current;
+    const track = trackRef.current;
+    const sticky = stickyRef.current;
+    if (!section || !track || !sticky) return;
+
+    const getScrollAmount = () => track.scrollWidth - sticky.clientWidth;
+
+    const onScroll = () => {
+      const rect = section.getBoundingClientRect();
+      const sectionH = section.offsetHeight - sticky.clientHeight;
+      const progress = Math.max(0, Math.min(1, -rect.top / sectionH));
+      track.style.transform = `translateX(-${progress * getScrollAmount()}px)`;
+    };
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  // Reveal observer
   useEffect(() => {
     const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) entry.target.classList.add("visible");
-        });
-      },
+      (entries) => entries.forEach((e) => {
+        if (e.isIntersecting) {
+          e.target.classList.add("is-visible");
+        }
+      }),
       { threshold: 0.1 }
     );
-    sectionRef.current?.querySelectorAll(".reveal, .reveal-left, .reveal-right").forEach((el) =>
-      observer.observe(el)
-    );
+    sectionRef.current?.querySelectorAll(".t-reveal, .f-reveal").forEach((el) => observer.observe(el));
     return () => observer.disconnect();
   }, []);
 
   return (
-    <section id="features" ref={sectionRef} className="py-32 px-6">
-      <Container>
+    <section
+      id="features"
+      ref={sectionRef}
+      style={{ height: `${FEATURES.length * 100 + 100}vh` }}
+    >
+      {/* Sticky container */}
+      <div
+        ref={stickyRef}
+        className="sticky top-0 h-screen overflow-hidden flex flex-col justify-between py-16 px-6 sm:px-10 lg:px-16"
+        style={{ background: "#000" }}
+      >
         {/* Header */}
-        <div className="mb-20">
-          <div className="flex items-center gap-4 mb-6 reveal">
-            <div className="h-px flex-1" style={{ background: "rgba(255,255,255,0.06)" }} />
-            <span
-              className="text-[10px] tracking-[0.3em] uppercase font-medium"
-              style={{ color: "#444" }}
+        <div className="flex items-end justify-between">
+          <div>
+            <div className="f-reveal flex items-center gap-3 mb-4">
+              <div className="w-1.5 h-1.5 rounded-full" style={{ background: "rgba(255,255,255,0.2)" }} />
+              <span className="text-[10px] tracking-[0.3em] uppercase" style={{ color: "rgba(255,255,255,0.2)" }}>
+                Features
+              </span>
+            </div>
+            <h2
+              className="font-bold leading-tight"
+              style={{ fontSize: "clamp(2rem, 5vw, 4rem)", color: "rgba(255,255,255,0.85)" }}
             >
-              Why Zero Build
-            </span>
-            <div className="h-px flex-1" style={{ background: "rgba(255,255,255,0.06)" }} />
+              <span className="t-reveal block">
+                <span className="t-reveal__inner">Built for creators</span>
+              </span>
+              <span className="t-reveal block d-2">
+                <span className="t-reveal__inner" style={{ color: "rgba(255,255,255,0.2)" }}>
+                  who care about quality.
+                </span>
+              </span>
+            </h2>
           </div>
-          <h2
-            className="text-4xl sm:text-5xl font-bold leading-tight reveal"
-            style={{ color: "rgba(255,255,255,0.85)" }}
+
+          <div
+            className="f-reveal hidden md:flex items-center gap-2 text-xs d-3"
+            style={{ color: "rgba(255,255,255,0.2)" }}
           >
-            Built for creators
-            <br />
-            <span style={{ color: "#333" }}>who care about quality.</span>
-          </h2>
+            <span>Scroll to explore</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+              <line x1="5" y1="12" x2="19" y2="12" />
+              <polyline points="12 5 19 12 12 19" />
+            </svg>
+          </div>
         </div>
 
-        {/* Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-          {FEATURES.map((feature, i) => (
-            <FeatureCard key={feature.title} feature={feature} index={i} />
-          ))}
+        {/* Horizontal track */}
+        <div className="overflow-hidden">
+          <div
+            ref={trackRef}
+            className="h-scroll-track gap-4 pb-2"
+            style={{ transition: "transform 0.05s linear" }}
+          >
+            {FEATURES.map((feat) => (
+              <div
+                key={feat.num}
+                className="feat-card spotlight-card relative rounded-2xl p-8 flex flex-col justify-between"
+                style={{
+                  height: "clamp(260px, 35vh, 340px)",
+                  background: "#080808",
+                  border: "1px solid rgba(255,255,255,0.06)",
+                }}
+                onMouseMove={(e) => {
+                  const rect = e.currentTarget.getBoundingClientRect();
+                  e.currentTarget.style.setProperty("--mx", `${e.clientX - rect.left}px`);
+                  e.currentTarget.style.setProperty("--my", `${e.clientY - rect.top}px`);
+                }}
+                onMouseEnter={(e) => {
+                  (e.currentTarget as HTMLDivElement).style.borderColor = "rgba(255,255,255,0.12)";
+                }}
+                onMouseLeave={(e) => {
+                  (e.currentTarget as HTMLDivElement).style.borderColor = "rgba(255,255,255,0.06)";
+                }}
+              >
+                <div className="spotlight" />
+
+                {/* Number */}
+                <div
+                  className="text-[10px] font-mono tracking-widest"
+                  style={{ color: "rgba(255,255,255,0.15)" }}
+                >
+                  {feat.num}
+                </div>
+
+                {/* Content */}
+                <div>
+                  <div
+                    className="text-[10px] tracking-[0.2em] uppercase font-medium mb-3 px-2 py-1 rounded-full inline-block"
+                    style={{ border: "1px solid rgba(255,255,255,0.06)", color: "rgba(255,255,255,0.2)" }}
+                  >
+                    {feat.tag}
+                  </div>
+                  <h3
+                    className="text-xl font-semibold mb-3"
+                    style={{ color: "rgba(255,255,255,0.8)" }}
+                  >
+                    {feat.title}
+                  </h3>
+                  <p className="text-sm leading-relaxed" style={{ color: "rgba(255,255,255,0.3)" }}>
+                    {feat.desc}
+                  </p>
+                </div>
+              </div>
+            ))}
+
+            {/* End card */}
+            <div
+              className="feat-card rounded-2xl p-8 flex flex-col items-center justify-center text-center"
+              style={{
+                height: "clamp(260px, 35vh, 340px)",
+                background: "rgba(255,255,255,0.02)",
+                border: "1px dashed rgba(255,255,255,0.06)",
+              }}
+            >
+              <div className="text-3xl font-bold mb-2" style={{ color: "rgba(255,255,255,0.08)" }}>
+                Ready?
+              </div>
+              <button
+                className="btn-primary mt-4 text-xs"
+                onClick={() => document.getElementById("upload")?.scrollIntoView({ behavior: "smooth" })}
+              >
+                Try it now
+              </button>
+            </div>
+          </div>
         </div>
-      </Container>
+      </div>
     </section>
   );
 }

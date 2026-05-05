@@ -1,27 +1,32 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export default function PageLoader() {
-  const [hidden, setHidden] = useState(false);
+  const loaderRef = useRef<HTMLDivElement>(null);
   const [count, setCount] = useState(0);
+  const [done, setDone] = useState(false);
 
   useEffect(() => {
-    // Count up 0 → 100
+    // Block scroll during load
+    document.documentElement.style.overflow = "hidden";
+
     const start = performance.now();
-    const duration = 1400;
+    const duration = 1600;
 
     const tick = (now: number) => {
-      const elapsed = now - start;
-      const progress = Math.min(elapsed / duration, 1);
-      // Ease out
-      const eased = 1 - Math.pow(1 - progress, 3);
+      const t = Math.min((now - start) / duration, 1);
+      const eased = 1 - Math.pow(1 - t, 3);
       setCount(Math.round(eased * 100));
 
-      if (progress < 1) {
+      if (t < 1) {
         requestAnimationFrame(tick);
       } else {
-        setTimeout(() => setHidden(true), 200);
+        // Clip-path wipe out
+        setTimeout(() => {
+          setDone(true);
+          document.documentElement.style.overflow = "";
+        }, 200);
       }
     };
 
@@ -29,15 +34,23 @@ export default function PageLoader() {
   }, []);
 
   return (
-    <div className={`page-loader ${hidden ? "hidden" : ""}`} aria-hidden="true">
-      <div className="loader-logo">Zero Build</div>
-      <div className="loader-bar-track">
-        <div className="loader-bar-fill" />
+    <div
+      ref={loaderRef}
+      className="c-loader"
+      style={{
+        clipPath: done ? "inset(0 0 100% 0)" : "inset(0 0 0 0)",
+        transition: done ? "clip-path 1s cubic-bezier(0.76,0,0.24,1)" : "none",
+        pointerEvents: done ? "none" : "all",
+      }}
+      aria-hidden="true"
+    >
+      <div className="c-loader__word">
+        <span>Zero Build</span>
       </div>
-      <div
-        className="text-xs font-mono"
-        style={{ color: "rgba(255,255,255,0.2)", letterSpacing: "0.1em" }}
-      >
+
+      <div className="c-loader__line" />
+
+      <div className="c-loader__num">
         {String(count).padStart(3, "0")}
       </div>
     </div>

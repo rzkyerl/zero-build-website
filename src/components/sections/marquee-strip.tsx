@@ -1,49 +1,34 @@
-const ITEMS = [
-  "Instagram Ready",
-  "WhatsApp Ready",
-  "Smart Auto",
-  "100% Offline",
-  "No Login",
-  "Zero Upload",
-  "Private by Design",
-  "Photo & Video",
-  "Browser Native",
-  "Instant Results",
-];
+const ROW1 = ["Instagram Ready", "WhatsApp Ready", "Smart Auto", "100% Offline", "No Login", "Zero Upload", "Private by Design", "Photo & Video"];
+const ROW2 = ["Browser Native", "Instant Results", "No Account", "Client-Side", "Lossless Quality", "Social Optimized", "Zero Telemetry", "Open & Compress"];
 
-export default function MarqueeStrip() {
-  const doubled = [...ITEMS, ...ITEMS];
-
+function MarqueeRow({ items, reverse = false }: { items: string[]; reverse?: boolean }) {
+  const doubled = [...items, ...items];
   return (
-    <div
-      className="relative overflow-hidden py-5 select-none"
-      style={{ borderTop: "1px solid #111", borderBottom: "1px solid #111" }}
-    >
-      {/* Fade edges */}
+    <div className="overflow-hidden py-3" style={{ borderBottom: "1px solid rgba(255,255,255,0.04)" }}>
       <div
-        className="absolute left-0 top-0 bottom-0 w-24 z-10 pointer-events-none"
-        style={{ background: "linear-gradient(to right, #000, transparent)" }}
-      />
-      <div
-        className="absolute right-0 top-0 bottom-0 w-24 z-10 pointer-events-none"
-        style={{ background: "linear-gradient(to left, #000, transparent)" }}
-      />
-
-      <div className="flex animate-marquee whitespace-nowrap" style={{ width: "max-content" }}>
+        className={`flex whitespace-nowrap ${reverse ? "marquee-right" : "marquee-left"}`}
+        style={{ width: "max-content" }}
+      >
         {doubled.map((item, i) => (
           <span
             key={i}
-            className="inline-flex items-center gap-3 mx-6 text-xs font-medium tracking-widest uppercase"
-            style={{ color: i % 3 === 0 ? "rgba(255,255,255,0.25)" : "rgba(255,255,255,0.1)" }}
+            className="inline-flex items-center gap-4 mx-8 text-[11px] font-medium tracking-[0.2em] uppercase select-none"
+            style={{ color: i % 4 === 0 ? "rgba(255,255,255,0.2)" : "rgba(255,255,255,0.07)" }}
           >
-            <span
-              className="w-1 h-1 rounded-full inline-block"
-              style={{ background: "rgba(255,255,255,0.15)" }}
-            />
+            <span className="w-1 h-1 rounded-full inline-block" style={{ background: "rgba(255,255,255,0.12)" }} />
             {item}
           </span>
         ))}
       </div>
+    </div>
+  );
+}
+
+export default function MarqueeStrip() {
+  return (
+    <div style={{ borderTop: "1px solid rgba(255,255,255,0.04)" }}>
+      <MarqueeRow items={ROW1} />
+      <MarqueeRow items={ROW2} reverse />
     </div>
   );
 }

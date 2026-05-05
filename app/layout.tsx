@@ -5,6 +5,7 @@ import Cursor from "@/components/ui/cursor";
 import Noise from "@/components/ui/noise";
 import PageLoader from "@/components/ui/page-loader";
 import ScrollProgress from "@/components/ui/scroll-progress";
+import SmoothScroll from "@/components/ui/smooth-scroll";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -28,11 +29,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html
-      lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
-    >
+    <html lang="en" className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col bg-black text-white">
+        <SmoothScroll />
         <PageLoader />
         <ScrollProgress />
         <Noise />
