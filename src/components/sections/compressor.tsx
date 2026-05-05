@@ -13,80 +13,111 @@ import type { PresetId } from "@/types/preset";
 
 /* ── Disclaimer box shown before upload ─────────────────── */
 function Disclaimer() {
+  const items = [
+    {
+      icon: (
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+          <rect x="3" y="3" width="18" height="18" rx="2" /><circle cx="8.5" cy="8.5" r="1.5" /><polyline points="21 15 16 10 5 21" />
+        </svg>
+      ),
+      label: "Photo",
+      specs: [
+        { k: "Input",   v: "JPG, PNG, WebP" },
+        { k: "Output",  v: "JPG" },
+        { k: "Max",     v: "20 MB" },
+        { k: "Speed",   v: "Instant" },
+      ],
+    },
+    {
+      icon: (
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+          <polygon points="23 7 16 12 23 17 23 7" /><rect x="1" y="5" width="15" height="14" rx="2" ry="2" />
+        </svg>
+      ),
+      label: "Video",
+      specs: [
+        { k: "Input",   v: "MP4" },
+        { k: "Output",  v: "MP4 · H.264" },
+        { k: "Max",     v: "100 MB" },
+        { k: "Speed",   v: "~1–3 min" },
+        { k: "Note",    v: "FFmpeg loads ~20 MB on first use" },
+      ],
+    },
+  ];
+
   return (
     <div
-      className="rounded-2xl p-5 space-y-4"
-      style={{ background: "rgba(255,255,255,0.02)", border: "1px solid var(--border)" }}
+      className="rounded-2xl overflow-hidden"
+      style={{ border: "1px solid var(--border)" }}
     >
-      <div className="flex items-center gap-2">
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--fg-3)" strokeWidth="2">
-          <circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="12" /><line x1="12" y1="16" x2="12.01" y2="16" />
+      {/* Header */}
+      <div
+        className="flex items-center gap-2.5 px-5 py-3"
+        style={{ borderBottom: "1px solid var(--border)", background: "rgba(255,255,255,0.02)" }}
+      >
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="var(--fg-3)" strokeWidth="2">
+          <circle cx="12" cy="12" r="10" />
+          <line x1="12" y1="8" x2="12" y2="12" />
+          <line x1="12" y1="16" x2="12.01" y2="16" />
         </svg>
-        <span style={{ fontFamily: "var(--font-geist-mono)", fontSize: 10, color: "var(--fg-3)", letterSpacing: "0.15em", textTransform: "uppercase" }}>
+        <span style={{ fontFamily: "var(--font-geist-mono)", fontSize: 10, color: "var(--fg-3)", letterSpacing: "0.18em", textTransform: "uppercase" }}>
           Before you start
         </span>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        {/* Image info */}
-        <div className="rounded-xl p-4" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid var(--border)" }}>
-          <div className="flex items-center gap-2 mb-3">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--fg-2)" strokeWidth="1.5">
-              <rect x="3" y="3" width="18" height="18" rx="2" /><circle cx="8.5" cy="8.5" r="1.5" /><polyline points="21 15 16 10 5 21" />
-            </svg>
-            <span className="text-xs font-semibold" style={{ color: "var(--fg-2)" }}>Photo</span>
-          </div>
-          <ul className="space-y-1.5">
-            {[
-              "Input: JPG, PNG, WebP",
-              "Output: JPG (re-encoded)",
-              "Max recommended: 20 MB",
-              "Speed: instant",
-            ].map((t) => (
-              <li key={t} className="flex items-start gap-2">
-                <span style={{ color: "var(--fg-3)", marginTop: 1 }}>·</span>
-                <span style={{ fontSize: 11, color: "var(--fg-3)", lineHeight: 1.5 }}>{t}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
+      {/* Two columns */}
+      <div className="grid grid-cols-2" style={{ background: "var(--bg)" }}>
+        {items.map((item, col) => (
+          <div
+            key={item.label}
+            className="px-5 py-4"
+            style={col === 0 ? { borderRight: "1px solid var(--border)" } : {}}
+          >
+            {/* Type label */}
+            <div
+              className="flex items-center gap-2 mb-4"
+              style={{ color: "var(--fg-2)" }}
+            >
+              {item.icon}
+              <span className="text-xs font-semibold">{item.label}</span>
+            </div>
 
-        {/* Video info */}
-        <div className="rounded-xl p-4" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid var(--border)" }}>
-          <div className="flex items-center gap-2 mb-3">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--fg-2)" strokeWidth="1.5">
-              <polygon points="23 7 16 12 23 17 23 7" /><rect x="1" y="5" width="15" height="14" rx="2" ry="2" />
-            </svg>
-            <span className="text-xs font-semibold" style={{ color: "var(--fg-2)" }}>Video</span>
+            {/* Spec rows */}
+            <div className="space-y-2">
+              {item.specs.map(({ k, v }) => (
+                <div key={k} className="flex items-baseline justify-between gap-3">
+                  <span style={{ fontFamily: "var(--font-geist-mono)", fontSize: 10, color: "var(--fg-3)", letterSpacing: "0.05em", flexShrink: 0 }}>
+                    {k}
+                  </span>
+                  <span style={{ fontSize: 11, color: "var(--fg-2)", textAlign: "right", lineHeight: 1.4 }}>
+                    {v}
+                  </span>
+                </div>
+              ))}
+            </div>
           </div>
-          <ul className="space-y-1.5">
-            {[
-              "Input: MP4",
-              "Output: MP4 (H.264)",
-              "Max recommended: 100 MB",
-              "Speed: ~1–3 min (browser)",
-              "First run loads FFmpeg (~20 MB)",
-            ].map((t) => (
-              <li key={t} className="flex items-start gap-2">
-                <span style={{ color: "var(--fg-3)", marginTop: 1 }}>·</span>
-                <span style={{ fontSize: 11, color: "var(--fg-3)", lineHeight: 1.5 }}>{t}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
+        ))}
       </div>
 
-      <p style={{ fontSize: 11, color: "var(--fg-3)", lineHeight: 1.6 }}>
-        All processing runs <span style={{ color: "var(--fg-2)" }}>entirely in your browser</span> — no files are uploaded to any server.
-        For faster video compression, use the{" "}
+      {/* Footer note */}
+      <div
+        className="px-5 py-3 flex items-center justify-between gap-4"
+        style={{ borderTop: "1px solid var(--border)", background: "rgba(255,255,255,0.015)" }}
+      >
+        <p style={{ fontSize: 11, color: "var(--fg-3)", lineHeight: 1.5 }}>
+          Runs entirely in your browser — nothing is uploaded.
+        </p>
         <a
           href="#download"
           onClick={(e) => { e.preventDefault(); document.getElementById("download")?.scrollIntoView({ behavior: "smooth" }); }}
-          style={{ color: "var(--fg-2)", textDecoration: "underline", textUnderlineOffset: 3 }}
+          className="flex-shrink-0 text-xs font-medium transition-colors duration-150"
+          style={{ color: "var(--fg-3)", textDecoration: "underline", textUnderlineOffset: 3 }}
+          onMouseEnter={(e) => ((e.currentTarget as HTMLAnchorElement).style.color = "var(--fg-2)")}
+          onMouseLeave={(e) => ((e.currentTarget as HTMLAnchorElement).style.color = "var(--fg-3)")}
         >
-          Android app
-        </a>.
-      </p>
+          Get Android app →
+        </a>
+      </div>
     </div>
   );
 }
