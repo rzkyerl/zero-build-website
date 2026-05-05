@@ -1,3 +1,3 @@
 export default function Noise() {
-  return <div className="noise-overlay" aria-hidden="true" />;
+  return <div className="zb-noise" aria-hidden="true" />;
 }

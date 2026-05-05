@@ -3,123 +3,95 @@
 import { useEffect, useRef } from "react";
 
 export default function About() {
-  const sectionRef = useRef<HTMLDivElement>(null);
+  const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const observer = new IntersectionObserver(
+    const obs = new IntersectionObserver(
       (entries) => entries.forEach((e) => {
-        if (e.isIntersecting) e.target.classList.add("is-visible");
+        if (!e.isIntersecting) return;
+        e.target.querySelectorAll<HTMLElement>(".mask").forEach((m, i) => setTimeout(() => m.classList.add("in"), i * 90));
+        e.target.querySelectorAll<HTMLElement>(".fade-up").forEach((m, i) => setTimeout(() => m.classList.add("in"), 100 + i * 60));
+        obs.unobserve(e.target);
       }),
       { threshold: 0.08 }
     );
-    sectionRef.current?.querySelectorAll(".t-reveal, .f-reveal").forEach((el) => observer.observe(el));
-    return () => observer.disconnect();
+    if (ref.current) obs.observe(ref.current);
+    return () => obs.disconnect();
   }, []);
 
   return (
     <section
       id="about"
-      ref={sectionRef}
-      className="min-h-screen flex flex-col justify-center py-32 px-6 sm:px-10 lg:px-16"
-      style={{ background: "#000", borderTop: "1px solid rgba(255,255,255,0.04)" }}
+      ref={ref}
+      style={{ background: "var(--bg)", borderTop: "1px solid var(--border)" }}
     >
-      {/* Label */}
-      <div className="f-reveal flex items-center gap-3 mb-16">
-        <div className="w-1.5 h-1.5 rounded-full" style={{ background: "rgba(255,255,255,0.2)" }} />
-        <span className="text-[10px] tracking-[0.3em] uppercase" style={{ color: "rgba(255,255,255,0.2)" }}>
-          About
-        </span>
-      </div>
+      <div className="max-w-6xl mx-auto px-6 sm:px-10 lg:px-16 py-24">
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 lg:gap-32 items-start max-w-7xl">
-        {/* Left */}
-        <div>
-          <h2
-            className="font-bold leading-[0.9] tracking-[-0.03em] mb-12"
-            style={{ fontSize: "clamp(2.5rem, 7vw, 6rem)" }}
-          >
-            <span className="t-reveal block">
-              <span className="t-reveal__inner" style={{ color: "rgba(255,255,255,0.85)" }}>
-                The story
-              </span>
-            </span>
-            <span className="t-reveal block d-2">
-              <span className="t-reveal__inner" style={{ color: "rgba(255,255,255,0.85)" }}>
-                behind
-              </span>
-            </span>
-            <span className="t-reveal block d-3">
-              <span className="t-reveal__inner" style={{ color: "rgba(255,255,255,0.15)" }}>
-                Zero Build.
-              </span>
-            </span>
-          </h2>
-
-          <div className="space-y-6 max-w-md">
-            <p
-              className="f-reveal text-sm leading-[1.8] d-4"
-              style={{ color: "rgba(255,255,255,0.35)" }}
-            >
-              Every time you upload a photo or video to Instagram, WhatsApp, or any social
-              platform, it gets recompressed — often resulting in blurry visuals, artifacts,
-              or files that are still too large.
-            </p>
-            <p
-              className="f-reveal text-sm leading-[1.8] d-5"
-              style={{ color: "rgba(255,255,255,0.35)" }}
-            >
-              Zero Build solves this by compressing your media{" "}
-              <span style={{ color: "rgba(255,255,255,0.65)" }}>before</span> you upload,
-              using parameters tuned per platform. The result: visually sharp files at a
-              fraction of the original size.
-            </p>
-          </div>
-
-          {/* Author */}
-          <div
-            className="f-reveal flex items-center gap-4 mt-12 pt-10 d-6"
-            style={{ borderTop: "1px solid rgba(255,255,255,0.05)" }}
-          >
-            <div
-              className="w-10 h-10 rounded-full flex items-center justify-center"
-              style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)" }}
-            >
-              <div className="w-4 h-4 rounded-full" style={{ background: "rgba(255,255,255,0.4)" }} />
-            </div>
-            <div>
-              <p className="text-sm font-medium" style={{ color: "rgba(255,255,255,0.5)" }}>CTRLBuild</p>
-              <p className="text-xs" style={{ color: "rgba(255,255,255,0.2)" }}>Developer</p>
-            </div>
-          </div>
+        {/* Section label */}
+        <div className="flex items-center gap-3 mb-16 fade-up">
+          <span style={{ fontFamily: "var(--font-geist-mono)", fontSize: 10, color: "var(--fg-3)", letterSpacing: "0.2em", textTransform: "uppercase" }}>
+            04 — About
+          </span>
         </div>
 
-        {/* Right — large stats */}
-        <div className="grid grid-cols-2 gap-px" style={{ background: "rgba(255,255,255,0.04)" }}>
-          {[
-            { value: "100%", label: "Client-side", sub: "No server processing" },
-            { value: "0",    label: "Data collected", sub: "Zero telemetry" },
-            { value: "4",    label: "Presets", sub: "Platform-tuned" },
-            { value: "1–2",  label: "Taps", sub: "Minimal friction" },
-          ].map((stat, i) => (
-            <div
-              key={stat.label}
-              className={`f-reveal d-${i + 3} p-8 group`}
-              style={{ background: "#000" }}
-            >
-              <div
-                className="text-4xl sm:text-5xl font-bold mb-3 transition-colors duration-300 group-hover:text-white"
-                style={{ color: "rgba(255,255,255,0.5)" }}
-              >
-                {stat.value}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-start">
+          {/* Left */}
+          <div>
+            <h2 className="font-bold mb-10" style={{ fontSize: "clamp(2.2rem, 6vw, 5rem)", lineHeight: 0.95, letterSpacing: "-0.035em" }}>
+              <span className="mask block"><span className="mask__inner" style={{ color: "var(--fg)" }}>The story</span></span>
+              <span className="mask block d2"><span className="mask__inner" style={{ color: "var(--fg)" }}>behind</span></span>
+              <span className="mask block d3"><span className="mask__inner" style={{ color: "var(--fg-2)" }}>Zero Build.</span></span>
+            </h2>
+
+            <div className="space-y-5 max-w-md">
+              <p className="fade-up d4 text-sm leading-[1.8]" style={{ color: "var(--fg-2)" }}>
+                Every time you upload a photo or video to Instagram, WhatsApp, or any social
+                platform, it gets recompressed — often resulting in blurry visuals, artifacts,
+                or files that are still too large.
+              </p>
+              <p className="fade-up d5 text-sm leading-[1.8]" style={{ color: "var(--fg-2)" }}>
+                Zero Build solves this by compressing your media{" "}
+                <span style={{ color: "var(--fg)" }}>before</span> you upload, using parameters
+                tuned per platform. The result: visually sharp files at a fraction of the original size.
+              </p>
+            </div>
+
+            <div className="fade-up d6 flex items-center gap-3 mt-10 pt-8" style={{ borderTop: "1px solid var(--border)" }}>
+              <div className="w-9 h-9 rounded-full flex items-center justify-center"
+                style={{ background: "rgba(255,255,255,0.05)", border: "1px solid var(--border)" }}>
+                <div className="w-3.5 h-3.5 rounded-full" style={{ background: "rgba(255,255,255,0.4)" }} />
               </div>
-              <div className="text-sm font-medium mb-1" style={{ color: "rgba(255,255,255,0.25)" }}>
-                {stat.label}
-              </div>
-              <div className="text-xs" style={{ color: "rgba(255,255,255,0.1)" }}>
-                {stat.sub}
+              <div>
+                <p className="text-sm font-medium" style={{ color: "var(--fg-2)" }}>CTRLBuild</p>
+                <p style={{ fontSize: 11, color: "var(--fg-3)", fontFamily: "var(--font-geist-mono)" }}>Developer</p>
               </div>
             </div>
-          ))}
+          </div>
+
+          {/* Right — stats */}
+          <div className="grid grid-cols-2 gap-px" style={{ background: "var(--border)" }}>
+            {[
+              { value: "100%", label: "Client-side",    sub: "No server processing" },
+              { value: "0",    label: "Data collected",  sub: "Zero telemetry" },
+              { value: "4",    label: "Presets",         sub: "Platform-tuned" },
+              { value: "1–2",  label: "Taps",            sub: "Minimal friction" },
+            ].map((s, i) => (
+              <div
+                key={s.label}
+                className={`fade-up d${i + 2} p-8 group`}
+                style={{ background: "var(--bg)" }}
+                onMouseEnter={(e) => { (e.currentTarget as HTMLDivElement).style.background = "var(--surface)"; }}
+                onMouseLeave={(e) => { (e.currentTarget as HTMLDivElement).style.background = "var(--bg)"; }}
+              >
+                <div className="font-bold mb-2 transition-colors duration-200 group-hover:text-white tabular-nums"
+                  style={{ fontSize: "clamp(2rem, 4vw, 3rem)", lineHeight: 1, letterSpacing: "-0.03em", color: "var(--fg-2)" }}>
+                  {s.value}
+                </div>
+                <div className="text-sm font-medium mb-1" style={{ color: "var(--fg-2)" }}>{s.label}</div>
+                <div style={{ fontSize: 11, color: "var(--fg-3)", fontFamily: "var(--font-geist-mono)" }}>{s.sub}</div>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </section>

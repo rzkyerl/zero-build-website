@@ -1,34 +1,41 @@
-const ROW1 = ["Instagram Ready", "WhatsApp Ready", "Smart Auto", "100% Offline", "No Login", "Zero Upload", "Private by Design", "Photo & Video"];
-const ROW2 = ["Browser Native", "Instant Results", "No Account", "Client-Side", "Lossless Quality", "Social Optimized", "Zero Telemetry", "Open & Compress"];
-
-function MarqueeRow({ items, reverse = false }: { items: string[]; reverse?: boolean }) {
-  const doubled = [...items, ...items];
-  return (
-    <div className="overflow-hidden py-3" style={{ borderBottom: "1px solid rgba(255,255,255,0.04)" }}>
-      <div
-        className={`flex whitespace-nowrap ${reverse ? "marquee-right" : "marquee-left"}`}
-        style={{ width: "max-content" }}
-      >
-        {doubled.map((item, i) => (
-          <span
-            key={i}
-            className="inline-flex items-center gap-4 mx-8 text-[11px] font-medium tracking-[0.2em] uppercase select-none"
-            style={{ color: i % 4 === 0 ? "rgba(255,255,255,0.2)" : "rgba(255,255,255,0.07)" }}
-          >
-            <span className="w-1 h-1 rounded-full inline-block" style={{ background: "rgba(255,255,255,0.12)" }} />
-            {item}
-          </span>
-        ))}
-      </div>
-    </div>
-  );
-}
+const ITEMS = [
+  "Instagram Ready", "WhatsApp Ready", "Smart Auto", "100% Offline",
+  "No Login", "Zero Upload", "Private by Design", "Photo & Video",
+  "Browser Native", "Instant Results", "No Account", "Client-Side",
+];
 
 export default function MarqueeStrip() {
+  const doubled = [...ITEMS, ...ITEMS];
   return (
-    <div style={{ borderTop: "1px solid rgba(255,255,255,0.04)" }}>
-      <MarqueeRow items={ROW1} />
-      <MarqueeRow items={ROW2} reverse />
+    <div
+      className="overflow-hidden py-4 select-none"
+      style={{ borderTop: "1px solid var(--border)", borderBottom: "1px solid var(--border)" }}
+    >
+      {/* Fade edges */}
+      <div className="relative">
+        <div className="absolute left-0 top-0 bottom-0 w-20 z-10 pointer-events-none"
+          style={{ background: "linear-gradient(to right, var(--bg), transparent)" }} />
+        <div className="absolute right-0 top-0 bottom-0 w-20 z-10 pointer-events-none"
+          style={{ background: "linear-gradient(to left, var(--bg), transparent)" }} />
+        <div className="flex mq-left" style={{ width: "max-content" }}>
+          {doubled.map((item, i) => (
+            <span
+              key={i}
+              className="inline-flex items-center gap-3 mx-7"
+              style={{
+                fontFamily: "var(--font-geist-mono)",
+                fontSize: 10,
+                letterSpacing: "0.18em",
+                textTransform: "uppercase",
+                color: i % 3 === 0 ? "rgba(255,255,255,0.22)" : "rgba(255,255,255,0.08)",
+              }}
+            >
+              <span className="w-1 h-1 rounded-full inline-block" style={{ background: "rgba(255,255,255,0.15)" }} />
+              {item}
+            </span>
+          ))}
+        </div>
+      </div>
     </div>
   );
 }

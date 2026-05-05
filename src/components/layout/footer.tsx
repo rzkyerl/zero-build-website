@@ -1,71 +1,56 @@
 "use client";
 
 export default function Footer() {
-  const scrollTo = (id: string) => {
+  const go = (id: string) => {
     const el = document.getElementById(id);
     if (!el) return;
-    const lenis = window.lenis;
-    if (lenis) lenis.scrollTo(el, { offset: 0, duration: 1.4 });
+    if (window.lenis) window.lenis.scrollTo(el, { offset: 0, duration: 1.2 });
     else el.scrollIntoView({ behavior: "smooth" });
   };
 
   return (
-    <footer
-      className="py-20 px-6 sm:px-10 lg:px-16"
-      style={{ borderTop: "1px solid rgba(255,255,255,0.04)", background: "#000" }}
-    >
-      <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-start sm:items-end justify-between gap-10">
-        {/* Brand */}
-        <div>
-          <div className="flex items-center gap-2.5 mb-3">
-            <div
-              className="w-6 h-6 rounded-full flex items-center justify-center"
-              style={{ border: "1px solid rgba(255,255,255,0.08)", background: "rgba(255,255,255,0.03)" }}
-            >
-              <div className="w-2 h-2 rounded-full" style={{ background: "rgba(255,255,255,0.4)" }} />
+    <footer style={{ background: "var(--bg)", borderTop: "1px solid var(--border)" }}>
+      <div className="max-w-6xl mx-auto px-6 sm:px-10 lg:px-16 py-14">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-8">
+          {/* Brand */}
+          <div>
+            <div className="flex items-center gap-2 mb-2">
+              <div className="w-5 h-5 rounded-full flex items-center justify-center"
+                style={{ border: "1px solid rgba(255,255,255,0.1)", background: "rgba(255,255,255,0.04)" }}>
+                <div className="w-1.5 h-1.5 rounded-full" style={{ background: "rgba(255,255,255,0.5)" }} />
+              </div>
+              <span className="text-sm font-semibold" style={{ color: "var(--fg-2)" }}>Zero Build</span>
             </div>
-            <span className="text-sm font-semibold" style={{ color: "rgba(255,255,255,0.5)" }}>
-              Zero Build
-            </span>
+            <p style={{ fontSize: 11, color: "var(--fg-3)" }}>Built for creators who care about quality.</p>
           </div>
-          <p className="text-xs" style={{ color: "rgba(255,255,255,0.15)" }}>
-            Built for creators who care about quality.
+
+          {/* Links */}
+          <div className="flex items-center gap-6">
+            {[{ l: "About", id: "about" }, { l: "Features", id: "features" }, { l: "Compress", id: "upload" }].map(({ l, id }) => (
+              <button key={id} onClick={() => go(id)}
+                className="text-xs transition-colors duration-200"
+                style={{ color: "var(--fg-3)" }}
+                onMouseEnter={(e) => ((e.currentTarget as HTMLButtonElement).style.color = "var(--fg-2)")}
+                onMouseLeave={(e) => ((e.currentTarget as HTMLButtonElement).style.color = "var(--fg-3)")}
+              >
+                {l}
+              </button>
+            ))}
+          </div>
+
+          <p style={{ fontFamily: "var(--font-geist-mono)", fontSize: 10, color: "var(--fg-4)", letterSpacing: "0.1em" }}>
+            v1.0.0 · CTRLBuild
           </p>
         </div>
 
-        {/* Links */}
-        <div className="flex items-center gap-8">
-          {[{ label: "About", id: "about" }, { label: "Features", id: "features" }, { label: "Compress", id: "upload" }].map(({ label, id }) => (
-            <button
-              key={id}
-              onClick={() => scrollTo(id)}
-              className="text-xs transition-colors duration-200"
-              style={{ color: "rgba(255,255,255,0.2)" }}
-              onMouseEnter={(e) => ((e.currentTarget as HTMLButtonElement).style.color = "rgba(255,255,255,0.5)")}
-              onMouseLeave={(e) => ((e.currentTarget as HTMLButtonElement).style.color = "rgba(255,255,255,0.2)")}
-            >
-              {label}
-            </button>
-          ))}
+        <div className="mt-10 pt-8 flex items-center justify-center gap-2" style={{ borderTop: "1px solid var(--border)" }}>
+          <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="var(--fg-4)" strokeWidth="2">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+          </svg>
+          <span style={{ fontFamily: "var(--font-geist-mono)", fontSize: 10, color: "var(--fg-4)", letterSpacing: "0.1em" }}>
+            100% Offline · Private · No data ever leaves your device
+          </span>
         </div>
-
-        {/* Right */}
-        <div className="text-right">
-          <p className="text-xs font-mono" style={{ color: "rgba(255,255,255,0.1)" }}>v1.0.0</p>
-          <p className="text-xs mt-1" style={{ color: "rgba(255,255,255,0.08)" }}>CTRLBuild</p>
-        </div>
-      </div>
-
-      <div
-        className="mt-12 pt-8 flex items-center justify-center gap-2"
-        style={{ borderTop: "1px solid rgba(255,255,255,0.03)" }}
-      >
-        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="2">
-          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-        </svg>
-        <span className="text-[10px]" style={{ color: "rgba(255,255,255,0.08)" }}>
-          100% Offline · Private · No data ever leaves your device
-        </span>
       </div>
     </footer>
   );
