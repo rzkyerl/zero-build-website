@@ -31,6 +31,7 @@ export default function Footer() {
               { l: "About",    id: "about" },
               { l: "Features", id: "features" },
               { l: "Compress", id: "upload" },
+              { l: "Download", id: "download" },
             ].map(({ l, id }) => (
               <button
                 key={id}

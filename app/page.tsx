@@ -5,6 +5,7 @@ import MarqueeStrip from "@/components/sections/marquee-strip";
 import Compressor from "@/components/sections/compressor";
 import Features from "@/components/sections/features";
 import About from "@/components/sections/about";
+import Download from "@/components/sections/download";
 
 export default function Home() {
   return (
@@ -16,6 +17,7 @@ export default function Home() {
         <Compressor />
         <Features />
         <About />
+        <Download />
       </main>
       <Footer />
     </>

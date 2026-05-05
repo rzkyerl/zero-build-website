@@ -7,6 +7,7 @@ const NAV_LINKS = [
   { label: "Compressor", id: "upload" },
   { label: "Features",   id: "features" },
   { label: "About",      id: "about" },
+  { label: "Download",   id: "download" },
 ];
 
 export default function Navbar() {
