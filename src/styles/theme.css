@@ -158,6 +158,7 @@ html.lenis, html.lenis body { height: auto; }
   display: block;
   transform: translateY(108%);
   transition: transform 0.85s cubic-bezier(0.16,1,0.3,1);
+  will-change: transform;
 }
 .mask.in .mask__inner {
   transform: translateY(0);
@@ -169,6 +170,7 @@ html.lenis, html.lenis body { height: auto; }
   transform: translateY(20px);
   transition: opacity 0.7s cubic-bezier(0.16,1,0.3,1),
               transform 0.7s cubic-bezier(0.16,1,0.3,1);
+  will-change: opacity, transform;
 }
 .fade-up.in { opacity: 1; transform: translateY(0); }
 
@@ -176,8 +178,15 @@ html.lenis, html.lenis body { height: auto; }
 .fade-in {
   opacity: 0;
   transition: opacity 0.6s ease;
+  will-change: opacity;
 }
 .fade-in.in { opacity: 1; }
+
+/* Reduced motion — show everything immediately */
+@media (prefers-reduced-motion: reduce) {
+  .mask__inner { transform: none !important; transition: none !important; }
+  .fade-up, .fade-in { opacity: 1 !important; transform: none !important; transition: none !important; }
+}
 
 /* Stagger delays */
 .d1 { transition-delay: 0.08s; }

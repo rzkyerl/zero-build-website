@@ -2,7 +2,6 @@
 
 import { useEffect, useRef, useState } from "react";
 
-/* Live cursor coordinates shown in corner — signature detail from CWM */
 function CursorCoords() {
   const [pos, setPos] = useState({ x: 0, y: 0 });
   useEffect(() => {
@@ -12,51 +11,48 @@ function CursorCoords() {
   }, []);
   return (
     <div
-      className="fixed bottom-6 right-6 z-40 hidden md:flex items-center gap-3 select-none"
+      className="fixed bottom-6 right-6 z-40 hidden md:flex items-center gap-3 select-none pointer-events-none"
       aria-hidden="true"
     >
-      <span style={{ fontFamily: "var(--font-geist-mono)", fontSize: 10, color: "rgba(255,255,255,0.18)", letterSpacing: "0.1em" }}>
+      <span style={{
+        fontFamily: "var(--font-geist-mono)",
+        fontSize: 10,
+        color: "rgba(255,255,255,0.2)",
+        letterSpacing: "0.1em",
+      }}>
         [{String(pos.x).padStart(4, "0")}, {String(pos.y).padStart(4, "0")}]
       </span>
     </div>
   );
 }
 
-/* Reveal hook — triggers .mask and .fade-up children when section enters viewport */
-function useReveal(ref: React.RefObject<HTMLElement | null>, delay = 0) {
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const trigger = () => {
-      el.querySelectorAll<HTMLElement>(".mask").forEach((m, i) => {
-        setTimeout(() => m.classList.add("in"), delay + i * 80);
-      });
-      el.querySelectorAll<HTMLElement>(".fade-up, .fade-in").forEach((m, i) => {
-        setTimeout(() => m.classList.add("in"), delay + i * 60);
-      });
-    };
-    const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting) { trigger(); obs.disconnect(); } }, { threshold: 0.1 });
-    obs.observe(el);
-    return () => obs.disconnect();
-  }, [ref, delay]);
-}
-
 export default function Hero() {
   const ref = useRef<HTMLElement>(null);
 
-  // Trigger reveals after loader finishes (~1.8s)
   useEffect(() => {
+    // Trigger after loader wipe-out completes (~1700ms)
     const t = setTimeout(() => {
       const el = ref.current;
       if (!el) return;
       el.querySelectorAll<HTMLElement>(".mask").forEach((m, i) => {
-        setTimeout(() => m.classList.add("in"), i * 90);
+        setTimeout(() => m.classList.add("in"), i * 100);
       });
-      el.querySelectorAll<HTMLElement>(".fade-up, .fade-in").forEach((m, i) => {
-        setTimeout(() => m.classList.add("in"), 200 + i * 70);
+      el.querySelectorAll<HTMLElement>(".fade-up").forEach((m, i) => {
+        setTimeout(() => m.classList.add("in"), 150 + i * 80);
+      });
+      el.querySelectorAll<HTMLElement>(".fade-in").forEach((m, i) => {
+        setTimeout(() => m.classList.add("in"), 100 + i * 60);
       });
     }, 1750);
-    return () => clearTimeout(t);
+
+    // Safety fallback — if something goes wrong, show content after 3s
+    const fallback = setTimeout(() => {
+      const el = ref.current;
+      if (!el) return;
+      el.querySelectorAll<HTMLElement>(".mask, .fade-up, .fade-in").forEach((m) => m.classList.add("in"));
+    }, 3000);
+
+    return () => { clearTimeout(t); clearTimeout(fallback); };
   }, []);
 
   const scrollTo = (id: string) => {
@@ -72,44 +68,58 @@ export default function Hero() {
       <section
         ref={ref}
         className="relative min-h-screen flex flex-col justify-between overflow-hidden"
-        style={{ background: "var(--bg)", paddingTop: 64 }}
+        style={{ background: "var(--bg)", paddingTop: 56 }}
       >
         {/* Subtle grid */}
-        <div className="absolute inset-0 pointer-events-none" aria-hidden="true"
+        <div
+          className="absolute inset-0 pointer-events-none"
+          aria-hidden="true"
           style={{
-            backgroundImage: "linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px)",
+            backgroundImage:
+              "linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px)",
             backgroundSize: "80px 80px",
           }}
         />
 
-        {/* Top bar */}
-        <div
-          className="relative z-10 flex items-center justify-between px-6 sm:px-10 lg:px-16 pt-8"
-        >
+        {/* Top meta bar */}
+        <div className="relative z-10 flex items-center justify-between px-6 sm:px-10 lg:px-16 pt-8">
           <div className="fade-in">
-            <span style={{ fontFamily: "var(--font-geist-mono)", fontSize: 10, color: "var(--fg-3)", letterSpacing: "0.15em", textTransform: "uppercase" }}>
+            <span style={{
+              fontFamily: "var(--font-geist-mono)",
+              fontSize: 10,
+              color: "var(--fg-3)",
+              letterSpacing: "0.15em",
+              textTransform: "uppercase",
+            }}>
               Zero Build · v1.0
             </span>
           </div>
-          <div className="fade-in d2 flex items-center gap-6">
-            <span style={{ fontFamily: "var(--font-geist-mono)", fontSize: 10, color: "var(--fg-3)", letterSpacing: "0.12em" }}>
-              100% Offline
-            </span>
-            <span style={{ fontFamily: "var(--font-geist-mono)", fontSize: 10, color: "var(--fg-3)", letterSpacing: "0.12em" }}>
-              No Upload
-            </span>
-            <span style={{ fontFamily: "var(--font-geist-mono)", fontSize: 10, color: "var(--fg-3)", letterSpacing: "0.12em" }}>
-              Private
-            </span>
+          <div className="fade-in d2 hidden sm:flex items-center gap-6">
+            {["100% Offline", "No Upload", "Private"].map((tag) => (
+              <span key={tag} style={{
+                fontFamily: "var(--font-geist-mono)",
+                fontSize: 10,
+                color: "var(--fg-3)",
+                letterSpacing: "0.12em",
+              }}>
+                {tag}
+              </span>
+            ))}
           </div>
         </div>
 
-        {/* Main headline — center */}
+        {/* Center — headline + CTA */}
         <div className="relative z-10 flex-1 flex flex-col items-center justify-center px-6 sm:px-10 lg:px-16 py-16 text-center">
-          {/* Chapter label */}
+          {/* Eyebrow */}
           <div className="fade-in mb-8 flex items-center gap-3">
             <div className="h-px w-8" style={{ background: "var(--fg-3)" }} />
-            <span style={{ fontFamily: "var(--font-geist-mono)", fontSize: 10, color: "var(--fg-3)", letterSpacing: "0.2em", textTransform: "uppercase" }}>
+            <span style={{
+              fontFamily: "var(--font-geist-mono)",
+              fontSize: 10,
+              color: "var(--fg-3)",
+              letterSpacing: "0.2em",
+              textTransform: "uppercase",
+            }}>
               Media Compressor
             </span>
             <div className="h-px w-8" style={{ background: "var(--fg-3)" }} />
@@ -118,17 +128,25 @@ export default function Hero() {
           {/* Headline */}
           <h1
             className="font-bold tracking-tight"
-            style={{ fontSize: "clamp(3.2rem, 10vw, 9rem)", lineHeight: 0.92, letterSpacing: "-0.035em", color: "var(--fg)" }}
+            style={{
+              fontSize: "clamp(3.5rem, 10vw, 9rem)",
+              lineHeight: 0.92,
+              letterSpacing: "-0.035em",
+            }}
           >
             <span className="mask block">
-              <span className="mask__inner">Compress.</span>
+              <span className="mask__inner" style={{ color: "var(--fg)" }}>
+                Compress.
+              </span>
             </span>
             <span className="mask block d2" style={{ color: "var(--fg-2)" }}>
-              <span className="mask__inner">Stay Sharp.</span>
+              <span className="mask__inner">
+                Stay Sharp.
+              </span>
             </span>
           </h1>
 
-          {/* Sub */}
+          {/* Subtext */}
           <p
             className="fade-up d3 mt-8 max-w-sm"
             style={{ fontSize: 15, lineHeight: 1.7, color: "var(--fg-2)" }}
@@ -141,29 +159,36 @@ export default function Hero() {
           <div className="fade-up d4 mt-10 flex flex-col sm:flex-row items-center gap-3">
             <button
               onClick={() => scrollTo("upload")}
-              className="group relative overflow-hidden px-8 py-3.5 rounded-full text-sm font-semibold transition-all duration-300 active:scale-95"
+              className="px-8 py-3.5 rounded-full text-sm font-semibold transition-all duration-300 active:scale-95"
               style={{ background: "var(--fg)", color: "#000" }}
-              onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.boxShadow = "0 0 32px rgba(255,255,255,0.2)"; }}
-              onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.boxShadow = "none"; }}
+              onMouseEnter={(e) => {
+                (e.currentTarget as HTMLButtonElement).style.boxShadow = "0 0 32px rgba(255,255,255,0.2)";
+              }}
+              onMouseLeave={(e) => {
+                (e.currentTarget as HTMLButtonElement).style.boxShadow = "none";
+              }}
             >
-              <span className="split-hover" style={{ height: "1.2em" }}>
-                <span className="split-hover__a">Upload Media</span>
-                <span className="split-hover__b">Upload Media</span>
-              </span>
+              Upload Media
             </button>
             <button
               onClick={() => scrollTo("features")}
               className="px-8 py-3.5 rounded-full text-sm font-medium transition-all duration-200 active:scale-95"
               style={{ border: "1px solid var(--border-hi)", color: "var(--fg-2)" }}
-              onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.color = "var(--fg)"; (e.currentTarget as HTMLButtonElement).style.borderColor = "rgba(255,255,255,0.3)"; }}
-              onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.color = "var(--fg-2)"; (e.currentTarget as HTMLButtonElement).style.borderColor = "var(--border-hi)"; }}
+              onMouseEnter={(e) => {
+                (e.currentTarget as HTMLButtonElement).style.color = "var(--fg)";
+                (e.currentTarget as HTMLButtonElement).style.borderColor = "rgba(255,255,255,0.3)";
+              }}
+              onMouseLeave={(e) => {
+                (e.currentTarget as HTMLButtonElement).style.color = "var(--fg-2)";
+                (e.currentTarget as HTMLButtonElement).style.borderColor = "var(--border-hi)";
+              }}
             >
               Explore Features
             </button>
           </div>
         </div>
 
-        {/* Bottom bar — stats row */}
+        {/* Bottom stats bar */}
         <div
           className="relative z-10 px-6 sm:px-10 lg:px-16 pb-10"
           style={{ borderTop: "1px solid var(--border)" }}
@@ -176,7 +201,10 @@ export default function Hero() {
               { value: "100%", label: "Client-side" },
             ].map((s, i) => (
               <div key={s.label} className={`fade-up d${i + 1}`}>
-                <div className="text-2xl font-bold tabular-nums" style={{ color: "var(--fg)", letterSpacing: "-0.02em" }}>
+                <div
+                  className="text-2xl font-bold tabular-nums"
+                  style={{ color: "var(--fg)", letterSpacing: "-0.02em" }}
+                >
                   {s.value}
                 </div>
                 <div style={{ fontSize: 11, color: "var(--fg-3)", marginTop: 2, letterSpacing: "0.05em" }}>
@@ -187,7 +215,10 @@ export default function Hero() {
 
             {/* Scroll indicator */}
             <div className="fade-in d5 flex items-center gap-3 ml-auto">
-              <div className="w-px h-8 overflow-hidden relative" style={{ background: "var(--fg-4)" }}>
+              <div
+                className="w-px h-8 overflow-hidden relative"
+                style={{ background: "var(--fg-4)" }}
+              >
                 <div
                   className="absolute top-0 left-0 w-full"
                   style={{
@@ -197,7 +228,13 @@ export default function Hero() {
                   }}
                 />
               </div>
-              <span style={{ fontFamily: "var(--font-geist-mono)", fontSize: 9, color: "var(--fg-3)", letterSpacing: "0.2em", textTransform: "uppercase" }}>
+              <span style={{
+                fontFamily: "var(--font-geist-mono)",
+                fontSize: 9,
+                color: "var(--fg-3)",
+                letterSpacing: "0.2em",
+                textTransform: "uppercase",
+              }}>
                 Scroll
               </span>
             </div>

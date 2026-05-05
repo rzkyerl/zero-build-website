@@ -37,11 +37,14 @@ export default function Compressor() {
     const obs = new IntersectionObserver(
       (entries) => entries.forEach((e) => {
         if (!e.isIntersecting) return;
-        e.target.querySelectorAll<HTMLElement>(".mask").forEach((m, i) => setTimeout(() => m.classList.add("in"), i * 80));
-        e.target.querySelectorAll<HTMLElement>(".fade-up").forEach((m, i) => setTimeout(() => m.classList.add("in"), 100 + i * 60));
+        // Small delay so elements entering viewport mid-scroll animate properly
+        setTimeout(() => {
+          e.target.querySelectorAll<HTMLElement>(".mask").forEach((m, i) => setTimeout(() => m.classList.add("in"), i * 80));
+          e.target.querySelectorAll<HTMLElement>(".fade-up").forEach((m, i) => setTimeout(() => m.classList.add("in"), 80 + i * 60));
+        }, 50);
         obs.unobserve(e.target);
       }),
-      { threshold: 0.1 }
+      { threshold: 0.08 }
     );
     if (sectionRef.current) obs.observe(sectionRef.current);
     return () => obs.disconnect();
