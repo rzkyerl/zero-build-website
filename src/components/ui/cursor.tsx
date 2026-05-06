@@ -7,13 +7,16 @@ export default function Cursor() {
   const arrowRef  = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // Only run on non-touch desktop devices
-    // pointer:coarse = touchscreen (phone/tablet) → skip
-    // window.innerWidth < 768 = narrow viewport → skip
-    if (
+    // Multi-layer mobile detection:
+    // 1. pointer:coarse  — touchscreen primary input
+    // 2. maxTouchPoints  — device has touch hardware
+    // 3. width < 768     — narrow viewport
+    const isTouch =
       window.matchMedia("(pointer: coarse)").matches ||
-      window.innerWidth < 768
-    ) return;
+      navigator.maxTouchPoints > 0 ||
+      window.innerWidth < 768;
+
+    if (isTouch) return;
 
     const canvas = canvasRef.current;
     const arrow  = arrowRef.current;
@@ -21,7 +24,7 @@ export default function Cursor() {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    // Reveal immediately on desktop
+    // Reveal on desktop
     canvas.style.display = "block";
     arrow.style.display  = "block";
     document.documentElement.classList.add("custom-cursor-active");
@@ -62,7 +65,7 @@ export default function Cursor() {
             ox: c * SPACING, oy: r * SPACING,
             vx: 0, vy: 0,
             size: 0.9 + Math.random() * 0.6,
-            baseAlpha: 0.08 + Math.random() * 0.07, // visible at rest
+            baseAlpha: 0.08 + Math.random() * 0.07,
           });
         }
       }
@@ -74,7 +77,6 @@ export default function Cursor() {
     const draw = () => {
       ctx.clearRect(0, 0, W, H);
 
-      // Hover glow
       if (isHover) {
         const g = ctx.createRadialGradient(mouseX, mouseY, 0, mouseX, mouseY, 70);
         g.addColorStop(0,   "rgba(255,255,255,0.07)");
@@ -86,7 +88,6 @@ export default function Cursor() {
         ctx.fill();
       }
 
-      // Particles
       for (const p of particles) {
         const dx   = mouseX - p.ox;
         const dy   = mouseY - p.oy;
@@ -120,6 +121,8 @@ export default function Cursor() {
     };
 
     const onMouse = (e: MouseEvent) => {
+      // Ignore synthetic mouse events fired by touch — they have no movementX/Y
+      if (e.movementX === 0 && e.movementY === 0) return;
       mouseX = e.clientX;
       mouseY = e.clientY;
       arrow.style.transform = `translate(${mouseX}px, ${mouseY}px)`;
