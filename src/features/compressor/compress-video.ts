@@ -57,12 +57,27 @@ export async function compressVideo(
     clearTimeout(animFrame);
 
     if (!res.ok) {
-      const err = await res.json().catch(() => ({ error: "Compression failed." }));
-      throw new Error(err.error || "Compression failed.");
+      // Try JSON first, fall back to text for HTML error pages
+      const contentType = res.headers.get("content-type") ?? "";
+      let message = "Compression failed.";
+      if (contentType.includes("application/json")) {
+        const err = await res.json().catch(() => null);
+        message = err?.error ?? `Server error (${res.status})`;
+      } else {
+        const text = await res.text().catch(() => "");
+        // Strip HTML tags if it's an HTML error page
+        message = text.replace(/<[^>]+>/g, "").trim().slice(0, 200) || `Server error (${res.status})`;
+      }
+      throw new Error(message);
     }
 
     onProgress?.(95);
     const blob = await res.blob();
+
+    if (blob.size === 0) {
+      throw new Error("Received empty file from compression service.");
+    }
+
     onProgress?.(100);
 
     return {
