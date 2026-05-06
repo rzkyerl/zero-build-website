@@ -9,7 +9,7 @@ export const PRESETS: Preset[] = [
   { id: "instagram", label: "Instagram Ready", desc: "Reels & Feed · H.264 CRF 18" },
   { id: "whatsapp", label: "WhatsApp Ready", desc: "Under 16 MB · CRF 26" },
   { id: "smart", label: "Smart Auto", desc: "Any platform · CRF 22" },
-  { id: "custom", label: "Custom", desc: "Set your own quality" },
+  { id: "custom", label: "Custom", desc: "Set target output size" },
 ];
 
 /** Simulated output size ratio per preset (for demo purposes) */

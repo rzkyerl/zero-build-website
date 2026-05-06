@@ -26,19 +26,27 @@ export async function compressImage(
   onProgress?.(30);
 
   // Determine canvas quality
+  // For custom: slider value = target output size as % of original
+  // Canvas quality (0–1) has a non-linear relationship to file size.
+  // Empirical curve: quality ≈ (targetRatio)^0.55 gives close results for JPEG.
+  // e.g. target 50% → quality ≈ 0.50^0.55 ≈ 0.67
+  //      target 20% → quality ≈ 0.20^0.55 ≈ 0.40
   let quality: number;
   if (preset === "custom") {
-    quality = customQuality / 100;
+    const targetRatio = Math.max(0.05, Math.min(0.95, customQuality / 100));
+    quality = Math.pow(targetRatio, 0.55);
   } else {
     quality = PRESET_QUALITY[preset] ?? 0.82;
   }
 
-  // For Instagram/WhatsApp, also cap max dimension to reduce file size
+  // For custom: scale max dimension with target size too
+  // target 10% → max 800px, target 90% → max 4096px
+  const customMaxDim = Math.round(800 + (customQuality / 90) * 3296);
   const MAX_DIM: Record<string, number> = {
     instagram: 1920,
     whatsapp:  1600,
     smart:     2560,
-    custom:    4096,
+    custom:    customMaxDim,
   };
   const maxDim = MAX_DIM[preset] ?? 2560;
 

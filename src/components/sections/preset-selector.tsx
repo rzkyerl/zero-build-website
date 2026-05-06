@@ -45,13 +45,13 @@ export default function PresetSelector({ selected, quality, onSelect, onQualityC
       {selected === "custom" && (
         <div className="mt-4 pt-4" style={{ borderTop: "1px solid var(--border)" }}>
           <div className="flex justify-between items-center mb-3">
-            <span className="text-xs" style={{ color: "var(--fg-3)" }}>Quality</span>
+            <span className="text-xs" style={{ color: "var(--fg-3)" }}>Target size</span>
             <span className="text-sm font-semibold tabular-nums" style={{ color: "var(--fg)", fontFamily: "var(--font-geist-mono)" }}>
-              {quality}%
+              ~{quality}% of original
             </span>
           </div>
           <input
-            type="range" min={10} max={100} value={quality}
+            type="range" min={10} max={90} value={quality}
             onChange={(e) => onQualityChange(Number(e.target.value))}
             className="w-full h-px appearance-none rounded-full"
             style={{
@@ -60,8 +60,8 @@ export default function PresetSelector({ selected, quality, onSelect, onQualityC
             }}
           />
           <div className="flex justify-between mt-2">
-            <span style={{ fontSize: 10, color: "var(--fg-4)", fontFamily: "var(--font-geist-mono)" }}>Low</span>
-            <span style={{ fontSize: 10, color: "var(--fg-4)", fontFamily: "var(--font-geist-mono)" }}>High</span>
+            <span style={{ fontSize: 10, color: "var(--fg-4)", fontFamily: "var(--font-geist-mono)" }}>10% (smallest)</span>
+            <span style={{ fontSize: 10, color: "var(--fg-4)", fontFamily: "var(--font-geist-mono)" }}>90% (largest)</span>
           </div>
         </div>
       )}

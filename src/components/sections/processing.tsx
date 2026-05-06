@@ -6,11 +6,29 @@ interface Props {
   strokeDashoffset: number;
   statusMsg?: string;
   isLoadingFFmpeg?: boolean;
+  timeLeft?: number | null;
+  isVideo?: boolean;
 }
 
-export default function Processing({ progress, circumference, strokeDashoffset, statusMsg, isLoadingFFmpeg }: Props) {
+function formatTime(seconds: number): string {
+  if (seconds < 60) return `${seconds}s`;
+  const m = Math.floor(seconds / 60);
+  const s = seconds % 60;
+  return s > 0 ? `${m}m ${s}s` : `${m}m`;
+}
+
+export default function Processing({
+  progress,
+  circumference,
+  strokeDashoffset,
+  statusMsg,
+  isLoadingFFmpeg,
+  timeLeft,
+  isVideo,
+}: Props) {
   return (
     <div className="flex flex-col items-center justify-center py-20 scale-in">
+      {/* Progress ring */}
       <div className="relative w-24 h-24 mb-8">
         <div className="absolute inset-0 rounded-full pulse-ring" style={{ background: "rgba(255,255,255,0.04)" }} />
         <svg className="w-24 h-24 -rotate-90" viewBox="0 0 88 88">
@@ -38,12 +56,23 @@ export default function Processing({ progress, circumference, strokeDashoffset, 
         </div>
       </div>
 
+      {/* Status message */}
       <p className="text-sm font-medium mb-2 text-center px-4" style={{ color: "var(--fg-2)" }}>
-        {statusMsg || "Processing locally..."}
+        {statusMsg || "Processing..."}
       </p>
-      <p style={{ fontSize: 11, color: "var(--fg-3)", fontFamily: "var(--font-geist-mono)" }}>
-        Your file never leaves your device
-      </p>
+
+      {/* Time remaining */}
+      <div className="h-5 flex items-center justify-center">
+        {timeLeft !== null && timeLeft !== undefined && timeLeft > 1 && progress < 99 ? (
+          <p style={{ fontSize: 11, color: "var(--fg-3)", fontFamily: "var(--font-geist-mono)" }}>
+            ~{formatTime(timeLeft)} remaining
+          </p>
+        ) : (
+          <p style={{ fontSize: 11, color: "var(--fg-3)", fontFamily: "var(--font-geist-mono)" }}>
+            {isVideo ? "Processing via cloud" : "Your file never leaves your device"}
+          </p>
+        )}
+      </div>
 
       <style>{`
         @keyframes spin-ring {

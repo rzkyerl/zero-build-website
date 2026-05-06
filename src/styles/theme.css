@@ -24,43 +24,16 @@ html { scroll-behavior: auto; }   /* Lenis handles this */
 ::selection { background: rgba(255,255,255,0.12); color: #fff; }
 
 /* ── Cursor ────────────────────────────────────────────── */
-html, body, * { cursor: none !important; }
+/* Hide default cursor on desktop only when custom cursor is active */
+@media (min-width: 768px) and (pointer: fine) {
+  html.custom-cursor-active, 
+  html.custom-cursor-active body, 
+  html.custom-cursor-active * { 
+    cursor: none !important; 
+  }
+}
 
-.zb-cursor {
-  position: fixed;
-  top: 0; left: 0;
-  pointer-events: none;
-  z-index: 9999;
-  will-change: transform;
-}
-.zb-cursor__dot {
-  position: absolute;
-  width: 6px; height: 6px;
-  background: #fff;
-  border-radius: 50%;
-  transform: translate(-50%, -50%);
-  mix-blend-mode: difference;
-}
-.zb-cursor__ring {
-  position: absolute;
-  width: 32px; height: 32px;
-  border: 1px solid rgba(255,255,255,0.35);
-  border-radius: 50%;
-  transform: translate(-50%, -50%);
-  transition: width 0.35s cubic-bezier(0.87,0,0.13,1),
-              height 0.35s cubic-bezier(0.87,0,0.13,1),
-              border-color 0.25s ease,
-              background 0.25s ease;
-  mix-blend-mode: difference;
-}
-.zb-cursor.is-hover .zb-cursor__ring {
-  width: 56px; height: 56px;
-  border-color: rgba(255,255,255,0.7);
-  background: rgba(255,255,255,0.04);
-}
-.zb-cursor.is-click .zb-cursor__dot {
-  width: 10px; height: 10px;
-}
+/* Old .zb-cursor div styles removed — cursor is now a particle canvas */
 
 /* ── Noise ─────────────────────────────────────────────── */
 .zb-noise {

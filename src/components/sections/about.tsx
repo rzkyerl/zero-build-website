@@ -51,9 +51,11 @@ export default function About() {
                 or files that are still too large.
               </p>
               <p className="fade-up d5 text-sm leading-[1.8]" style={{ color: "var(--fg-2)" }}>
-                Zero solves this by compressing your media{" "}
-                <span style={{ color: "var(--fg)" }}>before</span> you upload, using parameters
-                tuned per platform. The result: visually sharp files at a fraction of the original size.
+                Zero solves this with a hybrid approach: photos are compressed{" "}
+                <span style={{ color: "var(--fg)" }}>instantly in your browser</span> — no upload,
+                fully private. Videos are processed via{" "}
+                <span style={{ color: "var(--fg)" }}>secure cloud</span> for maximum speed and quality.
+                The result: sharp files at a fraction of the original size, ready for any platform.
               </p>
             </div>
 
@@ -80,7 +82,7 @@ export default function About() {
           {/* Right — stats */}
           <div className="grid grid-cols-2 gap-px" style={{ background: "var(--border)" }}>
             {[
-              { value: "100%", label: "Client-side",    sub: "No server processing" },
+              { value: "100%", label: "Photos local",    sub: "Browser-only, no upload" },
               { value: "0",    label: "Data collected",  sub: "Zero telemetry" },
               { value: "4",    label: "Presets",         sub: "Platform-tuned" },
               { value: "1–2",  label: "Taps",            sub: "Minimal friction" },

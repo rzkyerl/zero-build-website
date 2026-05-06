@@ -3,12 +3,12 @@
 import { useEffect, useRef } from "react";
 
 const FEATURES = [
-  { n: "01", title: "100% Offline",       desc: "All processing happens in your browser. Your files never touch a server — ever.",          tag: "Privacy" },
-  { n: "02", title: "No Login",           desc: "No account, no email, no tracking. Open the page and start compressing.",                  tag: "Simple" },
-  { n: "03", title: "Social Ready",       desc: "Presets tuned for Instagram, WhatsApp, and more. Sharp output every time.",                 tag: "Optimized" },
-  { n: "04", title: "Instant Results",    desc: "No waiting, no queues. Compression starts the moment you click Optimize.",                  tag: "Fast" },
-  { n: "05", title: "Private by Design",  desc: "Zero telemetry, zero analytics, zero data collection. Your media stays yours.",             tag: "Secure" },
-  { n: "06", title: "Photo & Video",      desc: "JPG, PNG, WebP images and MP4 videos — smart codec selection built in.",                   tag: "Versatile" },
+  { n: "01", title: "Photos: 100% Local",   desc: "Photo compression runs entirely in your browser via Canvas API. Your images never leave your device — ever.",  tag: "Privacy" },
+  { n: "02", title: "Videos: Cloud Fast",   desc: "Videos are processed via secure cloud API for maximum speed and quality. No FFmpeg download, no waiting.",      tag: "Hybrid" },
+  { n: "03", title: "No Login",             desc: "No account, no email, no tracking. Open the page and start compressing immediately.",                           tag: "Simple" },
+  { n: "04", title: "Social Ready",         desc: "Presets tuned for Instagram, WhatsApp, and more. Sharp output every time, every platform.",                     tag: "Optimized" },
+  { n: "05", title: "Private by Design",    desc: "Zero telemetry, zero analytics, zero data collection. Photo data stays yours — always.",                        tag: "Secure" },
+  { n: "06", title: "Custom Target Size",   desc: "Set your exact target output size as a percentage of the original. What you set is what you get.",              tag: "Precise" },
 ];
 
 export default function Features() {

@@ -39,8 +39,8 @@ function Disclaimer() {
         { k: "Input",   v: "MP4" },
         { k: "Output",  v: "MP4 · H.264" },
         { k: "Max",     v: "100 MB" },
-        { k: "Speed",   v: "~1–3 min" },
-        { k: "Note",    v: "FFmpeg loads ~20 MB on first use" },
+        { k: "Speed",   v: "~30s–2 min" },
+        { k: "Engine",  v: "Secure cloud API" },
       ],
     },
   ];
@@ -105,7 +105,7 @@ function Disclaimer() {
         style={{ borderTop: "1px solid var(--border)", background: "rgba(255,255,255,0.015)" }}
       >
         <p style={{ fontSize: 11, color: "var(--fg-3)", lineHeight: 1.5 }}>
-          Runs entirely in your browser — nothing is uploaded.
+          Photos compressed locally — videos via secure cloud. No account needed.
         </p>
         <a
           href="#download"
@@ -159,7 +159,7 @@ export default function Compressor() {
 
   const handleComplete = useCallback((r: CompressResult) => setResult(r), []);
 
-  const { appState, setAppState, progress, statusMsg, error, start, reset, circumference, strokeDashoffset } =
+  const { appState, setAppState, progress, statusMsg, error, timeLeft, start, reset, circumference, strokeDashoffset } =
     useProcessing({ fileInfo, preset, quality, onComplete: handleComplete });
 
   const { onDrop, onInputChange } = useUpload({
@@ -210,7 +210,7 @@ export default function Compressor() {
             </h2>
           </div>
           <p className="fade-up hidden md:block max-w-xs text-sm leading-relaxed" style={{ color: "var(--fg-2)", paddingTop: 4 }}>
-            Real compression — runs entirely in your browser. No uploads, no servers.
+            Hybrid compression — photos run in your browser, videos via secure cloud. No account, no limits.
           </p>
         </div>
 
@@ -265,6 +265,8 @@ export default function Compressor() {
                 strokeDashoffset={strokeDashoffset}
                 statusMsg={statusMsg}
                 isLoadingFFmpeg={appState === "loading-ffmpeg"}
+                timeLeft={timeLeft}
+                isVideo={fileInfo?.isVideo}
               />
             )}
 
@@ -285,10 +287,10 @@ export default function Compressor() {
               </p>
               <div className="space-y-0">
                 {[
-                  { n: "01", title: "Upload", desc: "Drop a JPG, PNG, WebP, or MP4 file. Nothing leaves your device." },
-                  { n: "02", title: "Select Preset", desc: "Choose Instagram, WhatsApp, Smart Auto, or set a custom quality." },
-                  { n: "03", title: "Optimize", desc: "Real compression runs in your browser — Canvas API for images, FFmpeg for video." },
-                  { n: "04", title: "Download", desc: "Save the actually compressed file to your device. Done." },
+                  { n: "01", title: "Upload", desc: "Drop a JPG, PNG, WebP, or MP4 file. Photos never leave your device." },
+                  { n: "02", title: "Select Preset", desc: "Choose Instagram, WhatsApp, Smart Auto, or set a custom target size." },
+                  { n: "03", title: "Optimize", desc: "Photos: Canvas API in your browser. Videos: processed via secure cloud API." },
+                  { n: "04", title: "Download", desc: "Save the compressed file to your device. Done." },
                 ].map((step) => (
                   <div key={step.n} className="flex gap-5 py-5 group" style={{ borderBottom: "1px solid var(--border)" }}>
                     <span style={{ fontFamily: "var(--font-geist-mono)", fontSize: 10, color: "var(--fg-3)", letterSpacing: "0.1em", paddingTop: 2, flexShrink: 0 }}>

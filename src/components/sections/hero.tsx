@@ -91,7 +91,7 @@ export default function Hero() {
             </span>
           </div>
           <div className="fade-in d2 hidden sm:flex items-center gap-6">
-            {["100% Offline", "No Upload", "Private"].map((tag) => (
+            {["Photos: In-Browser", "Videos: Cloud", "No Account"].map((tag) => (
               <span key={tag} style={{
                 fontFamily: "var(--font-geist-mono)",
                 fontSize: 10,
@@ -147,8 +147,8 @@ export default function Hero() {
             className="fade-up d3 mt-8 max-w-sm"
             style={{ fontSize: 15, lineHeight: 1.7, color: "var(--fg-2)" }}
           >
-            Optimize photos & videos for social media — directly in your browser.
-            No account. No server. No compromise.
+            Compress photos instantly in your browser — no upload, fully private.
+            Videos processed via secure cloud for maximum quality and speed.
           </p>
 
           {/* CTAs */}
@@ -192,9 +192,9 @@ export default function Hero() {
           <div className="flex flex-wrap items-center justify-between gap-6 pt-6">
             {[
               { value: "−72%", label: "Avg. size reduction" },
-              { value: "0ms",  label: "Upload time" },
+              { value: "Fast",  label: "Cloud video processing" },
               { value: "4",    label: "Social presets" },
-              { value: "100%", label: "Client-side" },
+              { value: "100%", label: "Photos: local only" },
             ].map((s, i) => (
               <div key={s.label} className={`fade-up d${i + 1}`}>
                 <div

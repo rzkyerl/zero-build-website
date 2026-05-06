@@ -250,8 +250,20 @@ export default function Download() {
 
             <p className="fade-up d3 text-sm leading-[1.8] max-w-sm mb-8" style={{ color: "var(--fg-2)" }}>
               The full Zero experience, now on Android. Compress photos and videos
-              on the go — same presets, same quality, fully offline.
+              on the go — same presets, same quality, fully offline. 100% safe, no viruses.
             </p>
+
+            {/* Security badge */}
+            <div className="fade-up d3 flex items-center gap-3 mb-6 px-4 py-3 rounded-xl" style={{ background: "rgba(100,255,100,0.04)", border: "1px solid rgba(100,255,100,0.12)" }}>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(100,255,100,0.7)" strokeWidth="2">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                <path d="M9 12l2 2 4-4" />
+              </svg>
+              <div>
+                <p className="text-xs font-semibold" style={{ color: "rgba(150,255,150,0.9)" }}>100% Safe & Verified</p>
+                <p style={{ fontSize: 10, color: "rgba(100,255,100,0.5)", marginTop: 1 }}>No viruses, no malware, no tracking</p>
+              </div>
+            </div>
 
             {/* Feature list */}
             <ul className="space-y-3 mb-10">
@@ -287,6 +299,23 @@ export default function Download() {
               <div style={{ fontFamily: "var(--font-geist-mono)" }}>
                 <div style={{ fontSize: 10, color: "var(--fg-3)", letterSpacing: "0.1em" }}>v1.0.0 · 64 MB</div>
                 <div style={{ fontSize: 10, color: "var(--fg-4)", letterSpacing: "0.08em", marginTop: 2 }}>Android API 24+</div>
+              </div>
+            </div>
+
+            {/* Google Play Coming Soon */}
+            <div className="fade-up d6 mt-4 flex items-center gap-3">
+              <div
+                className="flex items-center gap-2.5 px-4 py-2.5 rounded-xl"
+                style={{ border: "1px solid var(--border)", background: "rgba(255,255,255,0.02)", opacity: 0.6 }}
+              >
+                {/* Google Play icon */}
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                  <path d="M3 20.5v-17c0-.83 1-.83 1.5-.5l15 8.5-15 8.5c-.5.33-1.5.33-1.5-.5z" fill="rgba(255,255,255,0.4)" />
+                </svg>
+                <div>
+                  <div style={{ fontSize: 9, color: "var(--fg-4)", fontFamily: "var(--font-geist-mono)", letterSpacing: "0.1em", textTransform: "uppercase" }}>Coming soon</div>
+                  <div style={{ fontSize: 11, color: "var(--fg-3)", fontWeight: 500 }}>Google Play Store</div>
+                </div>
               </div>
             </div>
 
