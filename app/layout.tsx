@@ -19,7 +19,7 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-const BASE_URL = "https://zero-build-web.vercel.app";
+const BASE_URL = "https://www.zero-build.site";
 
 export const metadata: Metadata = {
   metadataBase: new URL(BASE_URL),
