@@ -1,36 +1,29 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 
 export default function Cursor() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const arrowRef  = useRef<HTMLDivElement>(null);
-  const [shouldRender, setShouldRender] = useState(false);
 
   useEffect(() => {
-    // Check if we should render the cursor at all (desktop only)
-    const isTouch  = window.matchMedia("(pointer: coarse)").matches;
-    const isMobile = window.innerWidth < 768;
-    
-    if (isTouch || isMobile) {
-      setShouldRender(false);
-      return;
-    }
-
-    setShouldRender(true);
+    // Only run on non-touch desktop devices
+    // pointer:coarse = touchscreen (phone/tablet) → skip
+    // window.innerWidth < 768 = narrow viewport → skip
+    if (
+      window.matchMedia("(pointer: coarse)").matches ||
+      window.innerWidth < 768
+    ) return;
 
     const canvas = canvasRef.current;
     const arrow  = arrowRef.current;
     if (!canvas || !arrow) return;
-
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    // Show the elements
+    // Reveal immediately on desktop
     canvas.style.display = "block";
     arrow.style.display  = "block";
-
-    // Hide native cursor
     document.documentElement.classList.add("custom-cursor-active");
 
     let W = (canvas.width  = window.innerWidth);
@@ -38,41 +31,12 @@ export default function Cursor() {
     canvas.style.width  = W + "px";
     canvas.style.height = H + "px";
 
-    let mouseX = -300;
-    let mouseY = -300;
+    let mouseX = -9999;
+    let mouseY = -9999;
     let isHover = false;
     let raf: number;
 
-    const onMouse = (e: MouseEvent) => {
-      mouseX = e.clientX;
-      mouseY = e.clientY;
-      arrow.style.transform = `translate(${mouseX}px, ${mouseY}px)`;
-    };
-
-    const onResize = () => {
-      W = canvas.width  = window.innerWidth;
-      H = canvas.height = window.innerHeight;
-      canvas.style.width  = W + "px";
-      canvas.style.height = H + "px";
-      particles = buildGrid();
-    };
-
-    // Hover detection
-    const addHoverListeners = () => {
-      document.querySelectorAll("a, button, [data-hover]").forEach((el) => {
-        el.addEventListener("mouseenter", () => {
-          isHover = true;
-          arrow.style.transform = `translate(${mouseX}px, ${mouseY}px) scale(1.4)`;
-        });
-        el.addEventListener("mouseleave", () => {
-          isHover = false;
-          arrow.style.transform = `translate(${mouseX}px, ${mouseY}px) scale(1)`;
-        });
-      });
-    };
-    setTimeout(addHoverListeners, 600);
-
-    // Particle grid
+    // ── Particle grid ─────────────────────────────────────
     const SPACING        = 36;
     const REPEL_RADIUS   = 140;
     const REPEL_STRENGTH = 6;
@@ -97,8 +61,8 @@ export default function Cursor() {
             x: c * SPACING, y: r * SPACING,
             ox: c * SPACING, oy: r * SPACING,
             vx: 0, vy: 0,
-            size: 0.8 + Math.random() * 0.7,
-            baseAlpha: 0.04 + Math.random() * 0.06,
+            size: 0.9 + Math.random() * 0.6,
+            baseAlpha: 0.08 + Math.random() * 0.07, // visible at rest
           });
         }
       }
@@ -155,6 +119,34 @@ export default function Cursor() {
       raf = requestAnimationFrame(draw);
     };
 
+    const onMouse = (e: MouseEvent) => {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+      arrow.style.transform = `translate(${mouseX}px, ${mouseY}px)`;
+    };
+
+    const onResize = () => {
+      W = canvas.width  = window.innerWidth;
+      H = canvas.height = window.innerHeight;
+      canvas.style.width  = W + "px";
+      canvas.style.height = H + "px";
+      particles = buildGrid();
+    };
+
+    const addHoverListeners = () => {
+      document.querySelectorAll("a, button, [data-hover]").forEach((el) => {
+        el.addEventListener("mouseenter", () => {
+          isHover = true;
+          arrow.style.transform = `translate(${mouseX}px, ${mouseY}px) scale(1.4)`;
+        });
+        el.addEventListener("mouseleave", () => {
+          isHover = false;
+          arrow.style.transform = `translate(${mouseX}px, ${mouseY}px) scale(1)`;
+        });
+      });
+    };
+    setTimeout(addHoverListeners, 600);
+
     window.addEventListener("mousemove", onMouse);
     window.addEventListener("resize",    onResize);
     raf = requestAnimationFrame(draw);
@@ -167,9 +159,6 @@ export default function Cursor() {
     };
   }, []);
 
-  // Don't render anything on mobile
-  if (!shouldRender) return null;
-
   return (
     <>
       <canvas
@@ -177,7 +166,6 @@ export default function Cursor() {
         style={{ display: "none", position: "fixed", inset: 0, pointerEvents: "none", zIndex: 9998 }}
         aria-hidden="true"
       />
-
       <div
         ref={arrowRef}
         aria-hidden="true"
@@ -195,13 +183,7 @@ export default function Cursor() {
           transition: "transform 0.08s linear, scale 0.2s cubic-bezier(0.16,1,0.3,1)",
         }}
       >
-        <svg
-          width="20"
-          height="24"
-          viewBox="0 0 20 24"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
+        <svg width="20" height="24" viewBox="0 0 20 24" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path
             d="M2 2L2 18L6 14L9 20L11.5 19L8.5 13L14 13L2 2Z"
             fill="white"
