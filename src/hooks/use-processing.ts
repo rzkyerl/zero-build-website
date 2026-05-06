@@ -4,14 +4,17 @@ import { useState, useRef, useCallback, useEffect } from "react";
 import type { AppState, CompressResult, FileInfo } from "@/types/file";
 import type { PresetId } from "@/types/preset";
 
+import type { ImageFormat } from "@/features/compressor/compress-image";
+
 interface UseProcessingOptions {
   fileInfo: FileInfo | null;
   preset: PresetId;
   quality: number;
+  format: ImageFormat;
   onComplete: (result: CompressResult) => void;
 }
 
-export function useProcessing({ fileInfo, preset, quality, onComplete }: UseProcessingOptions) {
+export function useProcessing({ fileInfo, preset, quality, format, onComplete }: UseProcessingOptions) {
   const [appState, setAppState]   = useState<AppState>("idle");
   const [progress, setProgress]   = useState(0);
   const [statusMsg, setStatusMsg] = useState("");
@@ -78,7 +81,7 @@ export function useProcessing({ fileInfo, preset, quality, onComplete }: UseProc
 
         const { compressImage } = await import("@/features/compressor/compress-image");
         const file = await urlToFile(fileInfo.url, fileInfo.name, fileInfo.type);
-        const result = await compressImage(file, preset, quality, (p) => setProgress(p));
+        const result = await compressImage(file, preset, quality, (p) => setProgress(p), format);
         stopTimer();
         if (!abortRef.current) { onComplete(result); setAppState("done"); }
       }
@@ -88,7 +91,7 @@ export function useProcessing({ fileInfo, preset, quality, onComplete }: UseProc
       setError(err instanceof Error ? err.message : "Compression failed. Please try again.");
       setAppState("error");
     }
-  }, [fileInfo, preset, quality, onComplete, startTimer, stopTimer]);
+  }, [fileInfo, preset, quality, format, onComplete, startTimer, stopTimer]);
 
   const reset = useCallback(() => {
     abortRef.current = true;

@@ -23,7 +23,7 @@ function Disclaimer() {
       label: "Photo",
       specs: [
         { k: "Input",   v: "JPG, PNG, WebP" },
-        { k: "Output",  v: "JPG" },
+        { k: "Output",  v: "JPG / WebP / PNG" },
         { k: "Max",     v: "20 MB" },
         { k: "Speed",   v: "Instant" },
       ],
@@ -147,11 +147,14 @@ function ErrorState({ message, onReset }: { message: string; onReset: () => void
   );
 }
 
+import type { ImageFormat } from "@/features/compressor/compress-image";
+
 /* ── Main compressor ─────────────────────────────────────── */
 export default function Compressor() {
   const [dragOver, setDragOver] = useState(false);
   const [preset, setPreset]     = useState<PresetId>("smart");
   const [quality, setQuality]   = useState(75);
+  const [format, setFormat]     = useState<ImageFormat>("jpeg");
   const [result, setResult]     = useState<CompressResult | null>(null);
   const sectionRef = useRef<HTMLDivElement>(null);
 
@@ -160,7 +163,7 @@ export default function Compressor() {
   const handleComplete = useCallback((r: CompressResult) => setResult(r), []);
 
   const { appState, setAppState, progress, statusMsg, error, timeLeft, start, reset, circumference, strokeDashoffset } =
-    useProcessing({ fileInfo, preset, quality, onComplete: handleComplete });
+    useProcessing({ fileInfo, preset, quality, format, onComplete: handleComplete });
 
   const { onDrop, onInputChange } = useUpload({
     onFile: (info) => { setFileInfo(info); setAppState("file-selected"); setResult(null); },
@@ -238,8 +241,11 @@ export default function Compressor() {
                 <PresetSelector
                   selected={preset}
                   quality={quality}
+                  format={format}
+                  isVideo={fileInfo?.isVideo}
                   onSelect={setPreset}
                   onQualityChange={setQuality}
+                  onFormatChange={setFormat}
                 />
                 <button
                   onClick={start}

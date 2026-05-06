@@ -121,6 +121,7 @@ function PhoneFrame() {
             src="/preview-mobile/Home.png"
             alt="Zero app — Home screen"
             fill
+            sizes="300px"
             style={{ objectFit: "cover", objectPosition: "top" }}
             priority
           />

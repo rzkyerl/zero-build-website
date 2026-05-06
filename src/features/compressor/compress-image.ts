@@ -8,39 +8,37 @@ const PRESET_QUALITY: Record<string, number> = {
   smart:     0.82,
 };
 
+export type ImageFormat = "jpeg" | "webp" | "png";
+
 /**
  * Compress an image file using Canvas API.
- * Output is always JPEG (universal support, good compression).
- * For WebP output, pass outputFormat = "webp".
+ * Supports JPEG, WebP, and PNG output.
+ * PNG is lossless — quality param has no effect on file size for PNG.
  */
 export async function compressImage(
   file: File,
   preset: PresetId,
   customQuality: number,          // 10–100
   onProgress?: (p: number) => void,
-  outputFormat: "jpeg" | "webp" = "jpeg"
+  outputFormat: ImageFormat = "jpeg"
 ): Promise<CompressResult> {
   onProgress?.(10);
 
   const bitmap = await createImageBitmap(file);
   onProgress?.(30);
 
-  // Determine canvas quality
-  // For custom: slider value = target output size as % of original
-  // Canvas quality (0–1) has a non-linear relationship to file size.
-  // Empirical curve: quality ≈ (targetRatio)^0.55 gives close results for JPEG.
-  // e.g. target 50% → quality ≈ 0.50^0.55 ≈ 0.67
-  //      target 20% → quality ≈ 0.20^0.55 ≈ 0.40
-  let quality: number;
-  if (preset === "custom") {
-    const targetRatio = Math.max(0.05, Math.min(0.95, customQuality / 100));
-    quality = Math.pow(targetRatio, 0.55);
-  } else {
-    quality = PRESET_QUALITY[preset] ?? 0.82;
+  // Quality only applies to JPEG and WebP (PNG is lossless)
+  let quality: number | undefined;
+  if (outputFormat !== "png") {
+    if (preset === "custom") {
+      const targetRatio = Math.max(0.05, Math.min(0.95, customQuality / 100));
+      quality = Math.pow(targetRatio, 0.55);
+    } else {
+      quality = PRESET_QUALITY[preset] ?? 0.82;
+    }
   }
 
-  // For custom: scale max dimension with target size too
-  // target 10% → max 800px, target 90% → max 4096px
+  // Max dimension per preset
   const customMaxDim = Math.round(800 + (customQuality / 90) * 3296);
   const MAX_DIM: Record<string, number> = {
     instagram: 1920,
@@ -67,7 +65,10 @@ export async function compressImage(
   onProgress?.(75);
 
   const mimeType = `image/${outputFormat}`;
-  const blob = await canvas.convertToBlob({ type: mimeType, quality });
+  const blob = await canvas.convertToBlob({
+    type: mimeType,
+    ...(quality !== undefined ? { quality } : {}),
+  });
 
   onProgress?.(100);
 
