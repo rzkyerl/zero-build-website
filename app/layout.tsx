@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import "./globals.css";
 import Cursor from "@/components/ui/cursor";
 import Noise from "@/components/ui/noise";
@@ -17,14 +19,95 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const BASE_URL = "https://zero-build-web.vercel.app";
+
 export const metadata: Metadata = {
-  title: "Zero — Compress. Stay Sharp.",
-  description:
-    "Optimize your photos and videos for social media directly in your browser. No upload, no account, 100% private.",
-  icons: {
-    icon: "/zero-logo.png",
-    apple: "/zero-logo.png",
+  metadataBase: new URL(BASE_URL),
+
+  title: {
+    default: "Zero — Compress. Stay Sharp.",
+    template: "%s | Zero",
   },
+  description:
+    "Compress photos instantly in your browser — no upload, fully private. Videos processed via secure cloud. Optimized presets for Instagram, WhatsApp, and more.",
+
+  keywords: [
+    "image compressor",
+    "video compressor",
+    "compress photo",
+    "compress video",
+    "instagram optimizer",
+    "whatsapp video compress",
+    "online image compression",
+    "browser image compressor",
+    "no upload compressor",
+    "private media compressor",
+    "reduce file size",
+    "social media optimizer",
+  ],
+
+  authors: [{ name: "CTRLBuild", url: "https://zero-build-web.vercel.app" }],
+  creator: "CTRLBuild",
+  publisher: "CTRLBuild",
+
+  // Open Graph
+  openGraph: {
+    type: "website",
+    url: BASE_URL,
+    siteName: "Zero",
+    title: "Zero — Compress. Stay Sharp.",
+    description:
+      "Compress photos instantly in your browser — no upload, fully private. Videos processed via secure cloud. Optimized for Instagram, WhatsApp, and more.",
+    images: [
+      {
+        url: "/zero-logo.png",
+        width: 512,
+        height: 512,
+        alt: "Zero — Media Compressor",
+      },
+    ],
+    locale: "en_US",
+  },
+
+  // Twitter / X
+  twitter: {
+    card: "summary",
+    title: "Zero — Compress. Stay Sharp.",
+    description:
+      "Compress photos instantly in your browser — no upload, fully private. Videos processed via secure cloud.",
+    images: ["/zero-logo.png"],
+    creator: "@ctrlbuild",
+  },
+
+  // Canonical & robots
+  alternates: {
+    canonical: BASE_URL,
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
+
+  // Icons
+  icons: {
+    icon: [
+      { url: "/zero-logo.png", type: "image/png" },
+    ],
+    apple: "/zero-logo.png",
+    shortcut: "/zero-logo.png",
+  },
+
+  // App manifest
+  manifest: "/manifest.json",
+
+  // Category
+  category: "technology",
 };
 
 export default function RootLayout({
@@ -41,6 +124,8 @@ export default function RootLayout({
         <Noise />
         <Cursor />
         {children}
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );

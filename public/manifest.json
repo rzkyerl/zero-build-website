@@ -1,0 +1,20 @@
+{
+  "name": "Zero — Compress. Stay Sharp.",
+  "short_name": "Zero",
+  "description": "Compress photos instantly in your browser. Videos processed via secure cloud. Optimized for Instagram, WhatsApp, and more.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#050505",
+  "theme_color": "#050505",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/zero-logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["utilities", "productivity"],
+  "lang": "en"
+}
