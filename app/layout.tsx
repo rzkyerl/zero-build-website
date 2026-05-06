@@ -46,7 +46,7 @@ export const metadata: Metadata = {
     "social media optimizer",
   ],
 
-  authors: [{ name: "CTRLBuild", url: "https://zero-build-web.vercel.app" }],
+  authors: [{ name: "CTRLBuild", url: "https://www.zero-build.site" }],
   creator: "CTRLBuild",
   publisher: "CTRLBuild",
 
