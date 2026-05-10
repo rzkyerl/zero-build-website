@@ -18,6 +18,12 @@ export default function ChatWidget() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput]       = useState("");
   const [loading, setLoading]   = useState(false);
+  const handleClose = () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (window as any).lenis?.start();
+    setOpen(false);
+  };
+
   const bottomRef = useRef<HTMLDivElement>(null);
   const inputRef  = useRef<HTMLInputElement>(null);
 
@@ -62,6 +68,14 @@ export default function ChatWidget() {
       {open && (
         <div
           className="fixed bottom-20 right-5 z-[9990] flex flex-col scale-in"
+          onMouseEnter={() => {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            (window as any).lenis?.stop();
+          }}
+          onMouseLeave={() => {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            (window as any).lenis?.start();
+          }}
           style={{
             width: "min(360px, calc(100vw - 40px))",
             height: "min(520px, calc(100vh - 120px))",
@@ -93,7 +107,7 @@ export default function ChatWidget() {
               </div>
             </div>
             <button
-              onClick={() => setOpen(false)}
+              onClick={() => handleClose()}
               className="w-7 h-7 rounded-full flex items-center justify-center transition-colors"
               style={{ color: "var(--fg-3)" }}
               onMouseEnter={(e) => ((e.currentTarget as HTMLButtonElement).style.color = "var(--fg)")}
@@ -205,7 +219,7 @@ export default function ChatWidget() {
 
       {/* FAB toggle button */}
       <button
-        onClick={() => setOpen(!open)}
+        onClick={() => open ? handleClose() : setOpen(true)}
         className="fixed bottom-6 right-6 z-[9991] flex items-center gap-2 transition-all duration-300 active:scale-95"
         style={{
           height: 40,
