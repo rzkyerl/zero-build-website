@@ -8,6 +8,7 @@ import Noise from "@/components/ui/noise";
 import PageLoader from "@/components/ui/page-loader";
 import ScrollProgress from "@/components/ui/scroll-progress";
 import SmoothScroll from "@/components/ui/smooth-scroll";
+import ChatWidget from "@/components/ui/chat-widget";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -124,6 +125,7 @@ export default function RootLayout({
         <Noise />
         <Cursor />
         {children}
+        <ChatWidget />
         <Analytics />
         <SpeedInsights />
       </body>
