@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 
 interface Message {
   role: "user" | "assistant";
@@ -18,25 +18,58 @@ export default function ChatWidget() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput]       = useState("");
   const [loading, setLoading]   = useState(false);
-  const handleClose = () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (window as any).lenis?.start();
-    setOpen(false);
-  };
 
-  const bottomRef = useRef<HTMLDivElement>(null);
-  const inputRef  = useRef<HTMLInputElement>(null);
+  const bottomRef  = useRef<HTMLDivElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
+  // ── Particle canvas visibility ──────────────────────────
+  // Hide the particle canvas when chat is open so it doesn't distract
   useEffect(() => {
-    if (open) {
-      setTimeout(() => inputRef.current?.focus(), 100);
-    }
+    const canvas = document.querySelector<HTMLCanvasElement>("canvas[aria-hidden='true']");
+    if (!canvas) return;
+    canvas.style.opacity = open ? "0" : "1";
+    canvas.style.transition = "opacity 0.3s ease";
   }, [open]);
 
+  // ── Open/close helpers ──────────────────────────────────
+  const handleOpen = () => {
+    setOpen(true);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (window as any).lenis?.stop();
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (window as any).lenis?.start();
+    // Restore particle canvas
+    const canvas = document.querySelector<HTMLCanvasElement>("canvas[aria-hidden='true']");
+    if (canvas) canvas.style.opacity = "1";
+  };
+
+  // Focus textarea when opened
+  useEffect(() => {
+    if (open) setTimeout(() => textareaRef.current?.focus(), 120);
+  }, [open]);
+
+  // Scroll to bottom on new messages
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, loading]);
 
+  // Auto-resize textarea
+  const resizeTextarea = useCallback(() => {
+    const el = textareaRef.current;
+    if (!el) return;
+    el.style.height = "auto";
+    el.style.height = Math.min(el.scrollHeight, 120) + "px";
+  }, []);
+
+  useEffect(() => {
+    resizeTextarea();
+  }, [input, resizeTextarea]);
+
+  // ── Send message ────────────────────────────────────────
   const send = async (text: string) => {
     const content = text.trim();
     if (!content || loading) return;
@@ -54,9 +87,15 @@ export default function ChatWidget() {
         body: JSON.stringify({ messages: next }),
       });
       const data = await res.json();
-      setMessages([...next, { role: "assistant", content: data.reply ?? "Sorry, something went wrong." }]);
+      setMessages([...next, {
+        role: "assistant",
+        content: data.reply ?? "Sorry, something went wrong.",
+      }]);
     } catch {
-      setMessages([...next, { role: "assistant", content: "Connection error. Please try again." }]);
+      setMessages([...next, {
+        role: "assistant",
+        content: "Connection error. Please try again.",
+      }]);
     } finally {
       setLoading(false);
     }
@@ -68,14 +107,8 @@ export default function ChatWidget() {
       {open && (
         <div
           className="fixed bottom-20 right-5 z-[9990] flex flex-col scale-in"
-          onMouseEnter={() => {
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            (window as any).lenis?.stop();
-          }}
-          onMouseLeave={() => {
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            (window as any).lenis?.start();
-          }}
+          onMouseEnter={() => { (window as any).lenis?.stop(); }} // eslint-disable-line @typescript-eslint/no-explicit-any
+          onMouseLeave={() => { (window as any).lenis?.stop(); }} // keep stopped while panel is open // eslint-disable-line @typescript-eslint/no-explicit-any
           style={{
             width: "min(360px, calc(100vw - 40px))",
             height: "min(520px, calc(100vh - 120px))",
@@ -97,8 +130,7 @@ export default function ChatWidget() {
                 style={{ background: "rgba(255,255,255,0.08)", border: "1px solid var(--border-hi)" }}
               >
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.7)" strokeWidth="1.5">
-                  <path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 18a8 8 0 1 1 8-8 8 8 0 0 1-8 8z"/>
-                  <path d="M12 6v6l4 2"/>
+                  <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
                 </svg>
               </div>
               <div>
@@ -107,7 +139,7 @@ export default function ChatWidget() {
               </div>
             </div>
             <button
-              onClick={() => handleClose()}
+              onClick={handleClose}
               className="w-7 h-7 rounded-full flex items-center justify-center transition-colors"
               style={{ color: "var(--fg-3)" }}
               onMouseEnter={(e) => ((e.currentTarget as HTMLButtonElement).style.color = "var(--fg)")}
@@ -130,7 +162,7 @@ export default function ChatWidget() {
             {messages.length === 0 && (
               <div className="flex flex-col items-center justify-center h-full gap-4 text-center">
                 <p className="text-sm" style={{ color: "var(--fg-2)" }}>
-                  Ask me anything about compressing your photos & videos.
+                  Ask me anything — about Zero or anything else.
                 </p>
                 <div className="flex flex-col gap-2 w-full">
                   {SUGGESTIONS.map((s) => (
@@ -152,7 +184,7 @@ export default function ChatWidget() {
             {messages.map((m, i) => (
               <div key={i} className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}>
                 <div
-                  className="max-w-[85%] px-4 py-2.5 rounded-2xl text-sm leading-relaxed"
+                  className="max-w-[85%] px-4 py-2.5 rounded-2xl text-sm leading-relaxed whitespace-pre-wrap"
                   style={
                     m.role === "user"
                       ? { background: "var(--fg)", color: "#000", borderBottomRightRadius: 6 }
@@ -189,24 +221,37 @@ export default function ChatWidget() {
             <div ref={bottomRef} />
           </div>
 
-          {/* Input */}
+          {/* Input — auto-growing textarea */}
           <div
-            className="flex-shrink-0 px-4 py-3 flex items-center gap-2"
+            className="flex-shrink-0 px-4 py-3 flex items-end gap-2"
             style={{ borderTop: "1px solid var(--border)" }}
           >
-            <input
-              ref={inputRef}
+            <textarea
+              ref={textareaRef}
               value={input}
+              rows={1}
               onChange={(e) => setInput(e.target.value)}
-              onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); send(input); } }}
-              placeholder="Ask about compression..."
-              className="flex-1 bg-transparent text-sm outline-none"
-              style={{ color: "var(--fg)", caretColor: "var(--fg)" }}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && !e.shiftKey) {
+                  e.preventDefault();
+                  send(input);
+                }
+              }}
+              placeholder="Ask anything... (Shift+Enter for new line)"
+              className="flex-1 bg-transparent text-sm outline-none resize-none"
+              style={{
+                color: "var(--fg)",
+                caretColor: "var(--fg)",
+                lineHeight: 1.5,
+                maxHeight: 120,
+                overflowY: "auto",
+                scrollbarWidth: "none",
+              }}
             />
             <button
               onClick={() => send(input)}
               disabled={!input.trim() || loading}
-              className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 transition-all duration-200 disabled:opacity-30"
+              className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 transition-all duration-200 disabled:opacity-30 mb-0.5"
               style={{ background: "var(--fg)" }}
             >
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#000" strokeWidth="2.5">
@@ -219,11 +264,11 @@ export default function ChatWidget() {
 
       {/* FAB toggle button */}
       <button
-        onClick={() => open ? handleClose() : setOpen(true)}
+        onClick={() => open ? handleClose() : handleOpen()}
         className="fixed bottom-6 right-6 z-[9991] flex items-center gap-2 transition-all duration-300 active:scale-95"
         style={{
           height: 40,
-          padding: open ? "0 14px" : "0 14px",
+          padding: "0 14px",
           borderRadius: 20,
           background: open ? "rgba(255,255,255,0.06)" : "rgba(255,255,255,0.08)",
           border: "1px solid var(--border-hi)",
