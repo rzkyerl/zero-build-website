@@ -103,10 +103,10 @@ export default function ChatWidget() {
 
   return (
     <>
-      {/* Chat panel */}
+      {/* Chat panel — desktop only */}
       {open && (
         <div
-          className="fixed bottom-20 right-5 z-[9990] flex flex-col scale-in"
+          className="fixed bottom-20 right-5 z-[9990] hidden md:flex flex-col scale-in"
           onMouseEnter={() => { (window as any).lenis?.stop(); }} // eslint-disable-line @typescript-eslint/no-explicit-any
           onMouseLeave={() => { (window as any).lenis?.stop(); }} // keep stopped while panel is open // eslint-disable-line @typescript-eslint/no-explicit-any
           style={{
@@ -237,7 +237,7 @@ export default function ChatWidget() {
                   send(input);
                 }
               }}
-              placeholder="Ask anything... (Shift+Enter for new line)"
+              placeholder="Ask anything..."
               className="flex-1 bg-transparent text-sm outline-none resize-none"
               style={{
                 color: "var(--fg)",
@@ -262,10 +262,10 @@ export default function ChatWidget() {
         </div>
       )}
 
-      {/* FAB toggle button */}
+      {/* FAB toggle button — desktop only */}
       <button
         onClick={() => open ? handleClose() : handleOpen()}
-        className="fixed bottom-6 right-6 z-[9991] flex items-center gap-2 transition-all duration-300 active:scale-95"
+        className="fixed bottom-6 right-6 z-[9991] hidden md:flex items-center gap-2 transition-all duration-300 active:scale-95"
         style={{
           height: 40,
           padding: "0 14px",
