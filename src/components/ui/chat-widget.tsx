@@ -200,24 +200,35 @@ export default function ChatWidget() {
       {/* FAB toggle button */}
       <button
         onClick={() => setOpen(!open)}
-        className="fixed bottom-5 right-5 z-[9991] w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300 active:scale-95"
+        className="fixed bottom-6 right-6 z-[9991] flex items-center gap-2 transition-all duration-300 active:scale-95"
         style={{
-          background: open ? "rgba(255,255,255,0.1)" : "var(--fg)",
-          border: open ? "1px solid var(--border-hi)" : "none",
-          boxShadow: open ? "none" : "0 8px 32px rgba(0,0,0,0.4)",
+          height: 40,
+          padding: open ? "0 14px" : "0 14px",
+          borderRadius: 20,
+          background: open ? "rgba(255,255,255,0.06)" : "rgba(255,255,255,0.08)",
+          border: "1px solid var(--border-hi)",
+          backdropFilter: "blur(12px)",
+          WebkitBackdropFilter: "blur(12px)",
+          boxShadow: "0 4px 24px rgba(0,0,0,0.3)",
         }}
         aria-label="Open AI assistant"
-        onMouseEnter={(e) => { if (!open) (e.currentTarget as HTMLButtonElement).style.boxShadow = "0 8px 32px rgba(255,255,255,0.15)"; }}
-        onMouseLeave={(e) => { if (!open) (e.currentTarget as HTMLButtonElement).style.boxShadow = "0 8px 32px rgba(0,0,0,0.4)"; }}
+        onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.background = "rgba(255,255,255,0.12)"; }}
+        onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.background = open ? "rgba(255,255,255,0.06)" : "rgba(255,255,255,0.08)"; }}
       >
         {open ? (
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.7)" strokeWidth="2">
-            <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
-          </svg>
+          <>
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.6)" strokeWidth="2">
+              <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+            </svg>
+            <span style={{ fontSize: 11, color: "rgba(255,255,255,0.6)", fontFamily: "var(--font-geist-mono)", letterSpacing: "0.05em" }}>Close</span>
+          </>
         ) : (
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#000" strokeWidth="2">
-            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-          </svg>
+          <>
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.7)" strokeWidth="2">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+            </svg>
+            <span style={{ fontSize: 11, color: "rgba(255,255,255,0.7)", fontFamily: "var(--font-geist-mono)", letterSpacing: "0.05em" }}>Ask AI</span>
+          </>
         )}
       </button>
 

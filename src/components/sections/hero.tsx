@@ -12,7 +12,7 @@ function CursorCoords() {
   }, []);
   return (
     <div
-      className="fixed bottom-6 right-6 z-40 hidden md:flex items-center gap-3 select-none pointer-events-none"
+      className="fixed bottom-16 right-6 z-40 hidden md:flex items-center gap-3 select-none pointer-events-none"
       aria-hidden="true"
     >
       <span style={{
