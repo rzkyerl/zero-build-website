@@ -103,24 +103,35 @@ export default function Navbar() {
 
           {/* Mobile hamburger */}
           <button
-            className="md:hidden relative z-[60] flex flex-col gap-1.5 p-2"
+            className="md:hidden relative z-[60] flex flex-col items-center justify-center w-8 h-8 gap-[5px]"
             onClick={() => setOpen(!open)}
             aria-label={open ? "Close menu" : "Open menu"}
           >
-            {[0, 1, 2].map((i) => (
-              <span
-                key={i}
-                className="block w-5 h-px transition-all duration-300"
-                style={{
-                  background: "rgba(255,255,255,0.6)",
-                  transform:
-                    i === 0 && open ? "rotate(45deg) translate(2px, 2px)"
-                    : i === 2 && open ? "rotate(-45deg) translate(2px, -2px)"
-                    : "none",
-                  opacity: i === 1 && open ? 0 : 1,
-                }}
-              />
-            ))}
+            <span
+              className="block h-px transition-all duration-300 origin-center"
+              style={{
+                width: 20,
+                background: "rgba(255,255,255,0.7)",
+                transform: open ? "translateY(6px) rotate(45deg)" : "none",
+              }}
+            />
+            <span
+              className="block h-px transition-all duration-300"
+              style={{
+                width: 20,
+                background: "rgba(255,255,255,0.7)",
+                opacity: open ? 0 : 1,
+                transform: open ? "scaleX(0)" : "none",
+              }}
+            />
+            <span
+              className="block h-px transition-all duration-300 origin-center"
+              style={{
+                width: 20,
+                background: "rgba(255,255,255,0.7)",
+                transform: open ? "translateY(-6px) rotate(-45deg)" : "none",
+              }}
+            />
           </button>
         </div>
       </nav>
