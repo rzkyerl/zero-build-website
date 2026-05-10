@@ -8,9 +8,9 @@ interface Message {
 }
 
 const SUGGESTIONS = [
-  "Which preset for Instagram?",
-  "JPEG vs WebP vs PNG?",
-  "Why is my file still large?",
+  "Which preset for Instagram Reels?",
+  "What's the difference between WebP and JPEG?",
+  "Ask me anything...",
 ];
 
 export default function ChatWidget() {
