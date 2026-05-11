@@ -249,47 +249,43 @@ export default function ChatWidget() {
                       : { background: "rgba(255,255,255,0.06)", color: "var(--fg-2)", borderBottomLeftRadius: 6, border: "1px solid var(--border)" }
                   }
                 >
-                  {m.content}
-                  {/* Blinking cursor while streaming this message */}
-                  {loading && m.role === "assistant" && i === messages.length - 1 && (
-                    <span
-                      style={{
-                        display: "inline-block",
-                        width: 2,
-                        height: "1em",
-                        background: "var(--fg-2)",
-                        marginLeft: 2,
-                        verticalAlign: "text-bottom",
-                        animation: "cursor-blink 0.8s step-end infinite",
-                      }}
-                    />
+                  {/* Show dots while waiting for first token, then show content */}
+                  {m.role === "assistant" && m.content === "" && loading ? (
+                    <div className="flex gap-1.5 items-center py-0.5">
+                      {[0, 1, 2].map((j) => (
+                        <div
+                          key={j}
+                          className="w-1.5 h-1.5 rounded-full"
+                          style={{
+                            background: "var(--fg-3)",
+                            animation: "dot-bounce 1.2s ease-in-out infinite",
+                            animationDelay: `${j * 0.2}s`,
+                          }}
+                        />
+                      ))}
+                    </div>
+                  ) : (
+                    <>
+                      {m.content}
+                      {loading && m.role === "assistant" && i === messages.length - 1 && m.content !== "" && (
+                        <span
+                          style={{
+                            display: "inline-block",
+                            width: 2,
+                            height: "1em",
+                            background: "var(--fg-2)",
+                            marginLeft: 2,
+                            verticalAlign: "text-bottom",
+                            animation: "cursor-blink 0.8s step-end infinite",
+                          }}
+                        />
+                      )}
+                    </>
                   )}
                 </div>
               </div>
             ))}
 
-            {loading && messages[messages.length - 1]?.content === "" && (
-              <div className="flex justify-start">
-                <div
-                  className="px-4 py-3 rounded-2xl"
-                  style={{ background: "rgba(255,255,255,0.06)", border: "1px solid var(--border)", borderBottomLeftRadius: 6 }}
-                >
-                  <div className="flex gap-1.5 items-center">
-                    {[0, 1, 2].map((i) => (
-                      <div
-                        key={i}
-                        className="w-1.5 h-1.5 rounded-full"
-                        style={{
-                          background: "var(--fg-3)",
-                          animation: "dot-bounce 1.2s ease-in-out infinite",
-                          animationDelay: `${i * 0.2}s`,
-                        }}
-                      />
-                    ))}
-                  </div>
-                </div>
-              </div>
-            )}
             <div ref={bottomRef} />
           </div>
 
