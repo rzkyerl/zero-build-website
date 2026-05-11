@@ -80,9 +80,34 @@ export default function ChatWidget() {
     setInput("");
     setLoading(true);
 
-    // Add empty assistant message that we'll stream into
+    // Add empty assistant message to stream into
     const assistantIdx = next.length;
     setMessages([...next, { role: "assistant", content: "" }]);
+
+    // Token queue — drip out at controlled pace like ChatGPT
+    const tokenQueue: string[] = [];
+    let streamDone = false;
+    let displayed = "";
+
+    // Drip interval: render one char every ~18ms (~55 chars/sec)
+    const drip = setInterval(() => {
+      if (tokenQueue.length === 0) {
+        if (streamDone) {
+          clearInterval(drip);
+          setLoading(false);
+        }
+        return;
+      }
+      // Take up to 2 chars per tick for smooth feel
+      const chunk = tokenQueue.splice(0, 2).join("");
+      displayed += chunk;
+      const snap = displayed;
+      setMessages((prev) => {
+        const updated = [...prev];
+        updated[assistantIdx] = { role: "assistant", content: snap };
+        return updated;
+      });
+    }, 18);
 
     try {
       const res = await fetch("/api/chat", {
@@ -96,7 +121,6 @@ export default function ChatWidget() {
       const reader = res.body.getReader();
       const decoder = new TextDecoder();
       let buffer = "";
-      let accumulated = "";
 
       while (true) {
         const { done, value } = await reader.read();
@@ -114,27 +138,25 @@ export default function ChatWidget() {
           try {
             const parsed = JSON.parse(data);
             if (parsed.token) {
-              accumulated += parsed.token;
-              setMessages((prev) => {
-                const updated = [...prev];
-                updated[assistantIdx] = { role: "assistant", content: accumulated };
-                return updated;
-              });
+              // Push each character individually into the queue
+              tokenQueue.push(...parsed.token.split(""));
             }
-          } catch {
-            // skip
-          }
+          } catch { /* skip */ }
         }
       }
     } catch {
+      clearInterval(drip);
       setMessages((prev) => {
         const updated = [...prev];
         updated[assistantIdx] = { role: "assistant", content: "Connection error. Please try again." };
         return updated;
       });
-    } finally {
       setLoading(false);
+      return;
     }
+
+    streamDone = true;
+    // drip interval will clear itself once queue is empty
   };
 
   return (
