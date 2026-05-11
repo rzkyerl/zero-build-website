@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest } from "next/server";
 
 export const runtime = "nodejs";
 
@@ -25,7 +25,10 @@ You are a general-purpose AI assistant that also has deep knowledge of Zero.
 export async function POST(req: NextRequest) {
   const apiKey = process.env.NVIDIA_API_KEY;
   if (!apiKey) {
-    return NextResponse.json({ error: "AI service not configured." }, { status: 503 });
+    return new Response(JSON.stringify({ error: "AI service not configured." }), {
+      status: 503,
+      headers: { "Content-Type": "application/json" },
+    });
   }
 
   let messages: { role: string; content: string }[];
@@ -34,7 +37,10 @@ export async function POST(req: NextRequest) {
     messages = body.messages;
     if (!Array.isArray(messages) || messages.length === 0) throw new Error();
   } catch {
-    return NextResponse.json({ error: "Invalid request." }, { status: 400 });
+    return new Response(JSON.stringify({ error: "Invalid request." }), {
+      status: 400,
+      headers: { "Content-Type": "application/json" },
+    });
   }
 
   const res = await fetch("https://integrate.api.nvidia.com/v1/chat/completions", {
@@ -42,7 +48,7 @@ export async function POST(req: NextRequest) {
     headers: {
       "Authorization": `Bearer ${apiKey}`,
       "Content-Type": "application/json",
-      "Accept": "application/json",
+      "Accept": "text/event-stream",
     },
     body: JSON.stringify({
       model: "meta/llama-3.1-8b-instruct",
@@ -53,18 +59,67 @@ export async function POST(req: NextRequest) {
       max_tokens: 1024,
       temperature: 0.6,
       top_p: 0.9,
-      stream: false,
+      stream: true,
     }),
   });
 
-  if (!res.ok) {
+  if (!res.ok || !res.body) {
     const text = await res.text().catch(() => "");
     console.error("[chat] NVIDIA API error:", res.status, text);
-    return NextResponse.json({ error: "AI service error." }, { status: 502 });
+    return new Response(JSON.stringify({ error: "AI service error." }), {
+      status: 502,
+      headers: { "Content-Type": "application/json" },
+    });
   }
 
-  const data = await res.json();
-  const reply = data.choices?.[0]?.message?.content ?? "Sorry, I couldn't generate a response.";
+  // Stream SSE from NVIDIA → forward as SSE to client
+  const encoder = new TextEncoder();
+  const stream = new ReadableStream({
+    async start(controller) {
+      const reader = res.body!.getReader();
+      const decoder = new TextDecoder();
+      let buffer = "";
 
-  return NextResponse.json({ reply });
+      try {
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+
+          buffer += decoder.decode(value, { stream: true });
+          const lines = buffer.split("\n");
+          buffer = lines.pop() ?? "";
+
+          for (const line of lines) {
+            const trimmed = line.trim();
+            if (!trimmed || !trimmed.startsWith("data:")) continue;
+            const data = trimmed.slice(5).trim();
+            if (data === "[DONE]") {
+              controller.enqueue(encoder.encode("data: [DONE]\n\n"));
+              continue;
+            }
+            try {
+              const parsed = JSON.parse(data);
+              const token = parsed.choices?.[0]?.delta?.content;
+              if (token) {
+                controller.enqueue(encoder.encode(`data: ${JSON.stringify({ token })}\n\n`));
+              }
+            } catch {
+              // skip malformed chunks
+            }
+          }
+        }
+      } finally {
+        controller.close();
+        reader.releaseLock();
+      }
+    },
+  });
+
+  return new Response(stream, {
+    headers: {
+      "Content-Type": "text/event-stream",
+      "Cache-Control": "no-cache",
+      "Connection": "keep-alive",
+    },
+  });
 }

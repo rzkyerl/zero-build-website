@@ -80,22 +80,58 @@ export default function ChatWidget() {
     setInput("");
     setLoading(true);
 
+    // Add empty assistant message that we'll stream into
+    const assistantIdx = next.length;
+    setMessages([...next, { role: "assistant", content: "" }]);
+
     try {
       const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ messages: next }),
       });
-      const data = await res.json();
-      setMessages([...next, {
-        role: "assistant",
-        content: data.reply ?? "Sorry, something went wrong.",
-      }]);
+
+      if (!res.ok || !res.body) throw new Error("Stream failed");
+
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
+      let buffer = "";
+      let accumulated = "";
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split("\n");
+        buffer = lines.pop() ?? "";
+
+        for (const line of lines) {
+          const trimmed = line.trim();
+          if (!trimmed.startsWith("data:")) continue;
+          const data = trimmed.slice(5).trim();
+          if (data === "[DONE]") break;
+          try {
+            const parsed = JSON.parse(data);
+            if (parsed.token) {
+              accumulated += parsed.token;
+              setMessages((prev) => {
+                const updated = [...prev];
+                updated[assistantIdx] = { role: "assistant", content: accumulated };
+                return updated;
+              });
+            }
+          } catch {
+            // skip
+          }
+        }
+      }
     } catch {
-      setMessages([...next, {
-        role: "assistant",
-        content: "Connection error. Please try again.",
-      }]);
+      setMessages((prev) => {
+        const updated = [...prev];
+        updated[assistantIdx] = { role: "assistant", content: "Connection error. Please try again." };
+        return updated;
+      });
     } finally {
       setLoading(false);
     }
@@ -192,11 +228,25 @@ export default function ChatWidget() {
                   }
                 >
                   {m.content}
+                  {/* Blinking cursor while streaming this message */}
+                  {loading && m.role === "assistant" && i === messages.length - 1 && (
+                    <span
+                      style={{
+                        display: "inline-block",
+                        width: 2,
+                        height: "1em",
+                        background: "var(--fg-2)",
+                        marginLeft: 2,
+                        verticalAlign: "text-bottom",
+                        animation: "cursor-blink 0.8s step-end infinite",
+                      }}
+                    />
+                  )}
                 </div>
               </div>
             ))}
 
-            {loading && (
+            {loading && messages[messages.length - 1]?.content === "" && (
               <div className="flex justify-start">
                 <div
                   className="px-4 py-3 rounded-2xl"
@@ -301,6 +351,10 @@ export default function ChatWidget() {
         @keyframes dot-bounce {
           0%, 80%, 100% { transform: translateY(0); opacity: 0.4; }
           40% { transform: translateY(-4px); opacity: 1; }
+        }
+        @keyframes cursor-blink {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0; }
         }
       `}</style>
     </>
