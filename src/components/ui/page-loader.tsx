@@ -7,15 +7,15 @@ export default function PageLoader() {
   const [gone, setGone] = useState(false);
 
   useEffect(() => {
-    // Short, snappy loader — 1s total, then wipe out
+    // Wipe out quickly — 200ms hold then 400ms clip transition
     const el = ref.current;
     if (!el) return;
 
     const t = setTimeout(() => {
-      el.style.transition = "clip-path 0.75s cubic-bezier(0.76,0,0.24,1)";
+      el.style.transition = "clip-path 0.4s cubic-bezier(0.76,0,0.24,1)";
       el.style.clipPath = "inset(0 0 100% 0)";
-      setTimeout(() => setGone(true), 800);
-    }, 900);
+      setTimeout(() => setGone(true), 420);
+    }, 200);
 
     return () => clearTimeout(t);
   }, []);

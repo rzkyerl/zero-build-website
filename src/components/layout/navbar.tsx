@@ -17,7 +17,8 @@ export default function Navbar() {
   const [open,     setOpen]     = useState(false);
 
   useEffect(() => {
-    const t = setTimeout(() => setVisible(true), 1900);
+    // Show navbar shortly after loader wipe-out (~650ms)
+    const t = setTimeout(() => setVisible(true), 650);
     const fn = () => setScrolled(window.scrollY > 40);
     window.addEventListener("scroll", fn, { passive: true });
     return () => { clearTimeout(t); window.removeEventListener("scroll", fn); };
@@ -69,6 +70,7 @@ export default function Navbar() {
                 alt="Zero"
                 width={20}
                 height={20}
+                priority
                 style={{ objectFit: "cover", opacity: 0.85 }}
               />
             </div>

@@ -31,27 +31,27 @@ export default function Hero() {
   const ref = useRef<HTMLElement>(null);
 
   useEffect(() => {
-    // Trigger after loader wipe-out completes (~1700ms)
+    // Trigger after loader wipe-out completes (~620ms total: 200ms hold + 400ms clip + 20ms buffer)
     const t = setTimeout(() => {
       const el = ref.current;
       if (!el) return;
       el.querySelectorAll<HTMLElement>(".mask").forEach((m, i) => {
-        setTimeout(() => m.classList.add("in"), i * 100);
+        setTimeout(() => m.classList.add("in"), i * 80);
       });
       el.querySelectorAll<HTMLElement>(".fade-up").forEach((m, i) => {
-        setTimeout(() => m.classList.add("in"), 150 + i * 80);
-      });
-      el.querySelectorAll<HTMLElement>(".fade-in").forEach((m, i) => {
         setTimeout(() => m.classList.add("in"), 100 + i * 60);
       });
-    }, 1750);
+      el.querySelectorAll<HTMLElement>(".fade-in").forEach((m, i) => {
+        setTimeout(() => m.classList.add("in"), 80 + i * 50);
+      });
+    }, 420);
 
-    // Safety fallback — if something goes wrong, show content after 3s
+    // Safety fallback
     const fallback = setTimeout(() => {
       const el = ref.current;
       if (!el) return;
       el.querySelectorAll<HTMLElement>(".mask, .fade-up, .fade-in").forEach((m) => m.classList.add("in"));
-    }, 3000);
+    }, 1200);
 
     return () => { clearTimeout(t); clearTimeout(fallback); };
   }, []);
