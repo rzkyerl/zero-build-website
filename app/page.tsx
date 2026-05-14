@@ -2,10 +2,10 @@ import Navbar from "@/components/layout/navbar";
 import Footer from "@/components/layout/footer";
 import Hero from "@/components/sections/hero";
 import MarqueeStrip from "@/components/sections/marquee-strip";
-import Compressor from "@/components/sections/compressor";
-import Features from "@/components/sections/features";
-import About from "@/components/sections/about";
-import Download from "@/components/sections/download";
+import BelowFold from "@/components/sections/below-fold";
+
+// Tell Next.js this page is fully static — eliminates cold-start TTFB
+export const dynamic = "force-static";
 
 export default function Home() {
   const jsonLd = {
@@ -48,10 +48,7 @@ export default function Home() {
       <main className="flex-1">
         <Hero />
         <MarqueeStrip />
-        <Compressor />
-        <Features />
-        <About />
-        <Download />
+        <BelowFold />
       </main>
       <Footer />
     </>

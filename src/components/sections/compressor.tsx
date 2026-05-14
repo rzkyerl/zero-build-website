@@ -197,7 +197,7 @@ export default function Compressor() {
   const isProcessing = appState === "processing" || appState === "loading-ffmpeg";
 
   return (
-    <section id="upload" ref={sectionRef} style={{ background: "var(--bg)", borderTop: "1px solid var(--border)" }}>
+    <section id="upload" ref={sectionRef} style={{ background: "var(--bg)", borderTop: "1px solid var(--border)", contentVisibility: "auto", containIntrinsicSize: "0 900px" }}>
       <div className="max-w-6xl mx-auto px-6 sm:px-10 lg:px-16 py-24">
 
         {/* Section header */}

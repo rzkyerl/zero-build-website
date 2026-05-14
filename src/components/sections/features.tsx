@@ -32,7 +32,7 @@ export default function Features() {
     <section
       id="features"
       ref={ref}
-      style={{ background: "var(--bg)", borderTop: "1px solid var(--border)" }}
+      style={{ background: "var(--bg)", borderTop: "1px solid var(--border)", contentVisibility: "auto", containIntrinsicSize: "0 700px" }}
     >
       <div className="max-w-6xl mx-auto px-6 sm:px-10 lg:px-16 py-24">
 

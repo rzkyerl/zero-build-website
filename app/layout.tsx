@@ -3,12 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import "./globals.css";
-import Cursor from "@/components/ui/cursor";
-import Noise from "@/components/ui/noise";
-import PageLoader from "@/components/ui/page-loader";
-import ScrollProgress from "@/components/ui/scroll-progress";
-import SmoothScroll from "@/components/ui/smooth-scroll";
-import ChatWidget from "@/components/ui/chat-widget";
+import ClientChrome from "@/components/ui/client-chrome";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -123,13 +118,8 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col bg-black text-white">
-        <SmoothScroll />
-        <PageLoader />
-        <ScrollProgress />
-        <Noise />
-        <Cursor />
+        <ClientChrome />
         {children}
-        <ChatWidget />
         <Analytics />
         <SpeedInsights />
       </body>

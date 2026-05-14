@@ -17,8 +17,8 @@ export default function Navbar() {
   const [open,     setOpen]     = useState(false);
 
   useEffect(() => {
-    // Show navbar shortly after loader wipe-out (~650ms)
-    const t = setTimeout(() => setVisible(true), 650);
+    // Show navbar shortly after loader wipe-out (~470ms)
+    const t = setTimeout(() => setVisible(true), 470);
     const fn = () => setScrolled(window.scrollY > 40);
     window.addEventListener("scroll", fn, { passive: true });
     return () => { clearTimeout(t); window.removeEventListener("scroll", fn); };
