@@ -31,11 +31,7 @@ export default function Hero() {
   const ref = useRef<HTMLElement>(null);
 
   useEffect(() => {
-    // Mark document as JS-ready — this switches CSS from SSR-visible state
-    // to animation-ready state (hidden, waiting for .in class)
-    document.documentElement.classList.add("js-ready");
-
-    // Trigger after loader wipe-out completes (~450ms total: 80ms hold + 350ms clip + 20ms buffer)
+    // Trigger after loader wipe-out completes (~620ms total: 200ms hold + 400ms clip + 20ms buffer)
     const t = setTimeout(() => {
       const el = ref.current;
       if (!el) return;
@@ -48,14 +44,14 @@ export default function Hero() {
       el.querySelectorAll<HTMLElement>(".fade-in").forEach((m, i) => {
         setTimeout(() => m.classList.add("in"), 80 + i * 50);
       });
-    }, 450);
+    }, 420);
 
     // Safety fallback
     const fallback = setTimeout(() => {
       const el = ref.current;
       if (!el) return;
       el.querySelectorAll<HTMLElement>(".mask, .fade-up, .fade-in").forEach((m) => m.classList.add("in"));
-    }, 1000);
+    }, 1200);
 
     return () => { clearTimeout(t); clearTimeout(fallback); };
   }, []);
