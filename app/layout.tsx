@@ -25,25 +25,49 @@ export const metadata: Metadata = {
   metadataBase: new URL(BASE_URL),
 
   title: {
-    default: "Zero — Compress. Stay Sharp.",
+    default: "Zero — Free Online Photo & Video Compressor",
     template: "%s | Zero",
   },
   description:
-    "Compress photos instantly in your browser — no upload, fully private. Videos processed via secure cloud. Optimized presets for Instagram, WhatsApp, and more.",
+    "Compress foto dan video secara gratis, cepat, dan privat. Compress foto langsung di browser tanpa upload — compress video via cloud. Preset Instagram, WhatsApp, dan lebih banyak lagi.",
 
   keywords: [
-    "image compressor",
-    "video compressor",
-    "compress photo",
+    // Primary — exact match queries
+    "compress foto",
+    "compress foto online",
+    "compress foto gratis",
     "compress video",
-    "instagram optimizer",
-    "whatsapp video compress",
-    "online image compression",
+    "compress video online",
+    "compress video gratis",
+    "compress gambar",
+    "compress gambar online",
+    // English equivalents
+    "compress photo",
+    "compress photo online",
+    "photo compressor",
+    "compress photo for free",
+    "video compressor",
+    "compress video for free",
+    "online video compressor",
+    "image compressor",
+    "online image compressor",
+    "reduce image size",
+    "reduce video size",
+    "reduce file size",
+    // Platform-specific
+    "compress foto instagram",
+    "compress foto whatsapp",
+    "compress video whatsapp",
+    "compress video instagram",
+    "instagram image optimizer",
+    "whatsapp photo compressor",
+    // Tool/context
     "browser image compressor",
     "no upload compressor",
-    "private media compressor",
-    "reduce file size",
-    "social media optimizer",
+    "private photo compressor",
+    "free media compressor",
+    "zero compress",
+    "zero build",
   ],
 
   authors: [{ name: "CTRLBuild", url: "https://www.zero-build.site" }],
@@ -55,9 +79,9 @@ export const metadata: Metadata = {
     type: "website",
     url: BASE_URL,
     siteName: "Zero",
-    title: "Zero — Compress. Stay Sharp.",
+    title: "Zero — Free Online Photo & Video Compressor",
     description:
-      "Compress photos instantly in your browser — no upload, fully private. Videos processed via secure cloud. Optimized for Instagram, WhatsApp, and more.",
+      "Compress foto dan video secara gratis — foto diproses langsung di browser (no upload), video via secure cloud. Preset siap untuk Instagram, WhatsApp, dan lebih banyak lagi.",
     images: [
       {
         url: "/zero-logo.png",
@@ -72,9 +96,9 @@ export const metadata: Metadata = {
   // Twitter / X
   twitter: {
     card: "summary",
-    title: "Zero — Compress. Stay Sharp.",
+    title: "Zero — Free Online Photo & Video Compressor",
     description:
-      "Compress photos instantly in your browser — no upload, fully private. Videos processed via secure cloud.",
+      "Compress foto gratis di browser — tanpa upload, 100% privat. Compress video via secure cloud. Cepat, tajam, siap untuk semua platform.",
     images: ["/zero-logo.png"],
     creator: "@ctrlbuild",
   },
